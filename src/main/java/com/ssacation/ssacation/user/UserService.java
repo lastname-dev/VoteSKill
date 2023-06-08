@@ -29,14 +29,14 @@ public class UserService {
    */
   public UserEntity createUser(UserEntity model) {
     UserEntity creatededUser = null;
-    try {
+    // try {
       Optional<UserEntity> existUser = getUser(model.getId());
       if (ObjectUtils.isEmpty(existUser)) {
         creatededUser = userRepository.save(model);
       }
-    } catch (Exception e) {
-      log.info("[Fail] e: " + e.toString());
-    }
+    // } catch (Exception e) {
+    //   log.info("[Fail] e: " + e.toString());
+    // }
     return creatededUser;
   }
 
