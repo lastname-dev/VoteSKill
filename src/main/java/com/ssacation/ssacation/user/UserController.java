@@ -2,10 +2,11 @@ package com.ssacation.ssacation.user;
 
 import java.text.ParseException;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +29,11 @@ public class UserController {
 
   private final UserService userService;
 
+  @GetMapping("/jwt-test")
+  public String jwtTest() {
+    return "jwtTest 요청 성공";
+  }
+
   /**
    * Member 생성
    *
@@ -35,52 +41,28 @@ public class UserController {
    * @throws ParseException
    */
   @Operation(description = "유저 등록 메서드입니다.")
-  @PostMapping()
-  public ResponseEntity<UserEntity> createUser(@RequestBody UserEntity newUser) throws ParseException {
+  @PostMapping("/sign-up")
+  public ResponseEntity<String> createUser(@RequestBody UserSignUpDto userSignUpDto) throws Exception {
 
-    UserEntity model = UserEntity.builder()
-    .id(newUser.getId())
-    .password(newUser.getPassword())
-    .name(newUser.getName())
-    .nickname(newUser.getNickname())
-    .email(newUser.getEmail())
-    .birthDay(newUser.getBirthDay())
-    .phoneNum(newUser.getPhoneNum())
-    .build();
+    userService.signUp(userSignUpDto);
 
-    UserEntity createdUser = userService.createUser(model);
-
-    if(ObjectUtils.isEmpty(createdUser)) {
-
-      return new ResponseEntity<>(createdUser, HttpStatus.FORBIDDEN);
-
-    } else {
-
-      return new ResponseEntity<>(createdUser, HttpStatus.OK);
-    }
+    return ResponseEntity.ok("회원가입 성공!");
   }
-  
+
   /**
-   * Member 수정
+   * User 정보 수정
+   * 
+   * @AuthenticationPrincipal 를 통해 인증정보를 반아오기
    *
    * @return
    * @throws ParseException
    */
-  @Operation(description = "유저 수정 메서드입니다.")
+  @Operation(description = "유저 정보 수정 메서드입니다.")
   @PutMapping()
-  public ResponseEntity<UserEntity> updateUser(@RequestBody UserEntity updateUser) throws ParseException {
+  public ResponseEntity<UserEntity> updateUser(@AuthenticationPrincipal UserDetails token,
+      @RequestBody UserUpdateDTO updateData) throws ParseException {
 
-    UserEntity model = UserEntity.builder()
-    .id(updateUser.getId())
-    .password(updateUser.getPassword())
-    .name(updateUser.getName())
-    .nickname(updateUser.getNickname())
-    .email(updateUser.getEmail())
-    .birthDay(updateUser.getBirthDay())
-    .phoneNum(updateUser.getPhoneNum())
-    .build();
-
-    UserEntity updatedUser = userService.updateUser(model);
+    UserEntity updatedUser = userService.updateUserInfo(token, updateData);
 
     if (!ObjectUtils.isEmpty(updatedUser)) {
 
@@ -91,7 +73,7 @@ public class UserController {
       return new ResponseEntity<>(updatedUser, HttpStatus.NOT_FOUND);
     }
   }
-  
+
   /**
    * Member List 조회
    *
@@ -105,7 +87,7 @@ public class UserController {
 
     return new ResponseEntity<>(users, HttpStatus.OK);
   }
-  
+
   /**
    * Id에 해당하는 Member 조회
    *
@@ -114,13 +96,13 @@ public class UserController {
    */
   @Operation(description = "특정 유저 조회 메서드입니다.")
   @GetMapping("{id}")
-  public ResponseEntity<Optional<UserEntity>> getUser(@PathVariable("id") String id) {
+  public ResponseEntity<UserEntity> getUser(@PathVariable("email") String email) {
 
-    Optional<UserEntity> user = userService.getUser(id);
+    UserEntity user = userService.getUser(email);
 
     return new ResponseEntity<>(user, HttpStatus.OK);
   }
-  
+
   /**
    * Id에 해당하는 Member 삭제
    *
@@ -132,7 +114,7 @@ public class UserController {
   public ResponseEntity<String> deleteUser(@PathVariable("id") String id) {
 
     userService.deleteUser(id);
-    
+
     return new ResponseEntity<>(id, HttpStatus.OK);
   }
 }

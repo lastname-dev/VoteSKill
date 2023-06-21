@@ -1,13 +1,14 @@
 package com.ssacation.ssacation.user;
 
 import java.util.List;
-import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 
 @Slf4j
 @Service
@@ -16,6 +17,7 @@ import org.springframework.util.ObjectUtils;
 public class UserService {
 
   private final UserRepository userRepository;
+  private final PasswordEncoder passwordEncoder;
 
   /**
    * User 생성
@@ -27,17 +29,25 @@ public class UserService {
    * @param model
    * @return
    */
-  public UserEntity createUser(UserEntity model) {
-    UserEntity creatededUser = null;
-    // try {
-      Optional<UserEntity> existUser = getUser(model.getId());
-      if (ObjectUtils.isEmpty(existUser)) {
-        creatededUser = userRepository.save(model);
-      }
-    // } catch (Exception e) {
-    //   log.info("[Fail] e: " + e.toString());
-    // }
-    return creatededUser;
+  public void signUp(UserSignUpDto userSignUpDto) throws Exception {
+
+    if (userRepository.findByEmail(userSignUpDto.getEmail()).isPresent()) {
+      throw new Exception("이미 존재하는 이메일입니다.");
+    }
+
+    if (userRepository.findByNickname(userSignUpDto.getNickname()).isPresent()) {
+      throw new Exception("이미 존재하는 닉네임입니다.");
+    }
+
+    UserEntity user = UserEntity.builder()
+        .email(userSignUpDto.getEmail())
+        .password(userSignUpDto.getPassword())
+        .nickname(userSignUpDto.getNickname())
+        .role(Role.USER)
+        .build();
+
+    user.passwordEncode(passwordEncoder);
+    userRepository.save(user);
   }
 
   /**
@@ -50,16 +60,32 @@ public class UserService {
    * @param model
    * @return
    */
-  public UserEntity updateUser(UserEntity model) {
+  public UserEntity updateUserInfo(UserDetails token, UserUpdateDTO updateData) {
+
     UserEntity updatedUser = null;
+
     try {
-      Optional<UserEntity> existUser = getUser(model.getId());
-      if (!ObjectUtils.isEmpty(existUser)) {
-        updatedUser = userRepository.save(model);
-      }
+
+      if (updateData.isUserUpdateEmpty())
+        throw new Exception("Required info is not qualified");
+
+      UserEntity existUser = getUser(token.getUsername());
+
+      existUser.setNickname(updateData.getNickname());
+      existUser.setBirthDay(updateData.getBirthDay());
+      existUser.setPhoneNum(updateData.getPhoneNum());
+
+      if (!existUser.isUserInfoEmpty())
+        existUser.authorizeUser();
+
+      // if (!ObjectUtils.isEmpty(existUser))
+      // updatedUser = userRepository.save(model);
+
     } catch (Exception e) {
+
       log.info("[Fail] e: " + e.toString());
     }
+
     return updatedUser;
   }
 
@@ -76,12 +102,15 @@ public class UserService {
   /**
    * Id에 해당하는 User 조회
    * JPA Repository의 findBy Method를 사용하여 특정 User를 조회
+   * find 메소드는 NULL 값일 수도 있으므로 Optional<T>를 반환하지만,
+   * Optional 객체의 get() 메소드를 통해 Entity로 변환해서 반환함.
    * 
    * @param id
    * @return
    */
-  public Optional<UserEntity> getUser(String id) {
-    return userRepository.findById(id);
+  public UserEntity getUser(String email) {
+
+    return userRepository.findByEmail(email).get();
   }
 
   /**

@@ -1,4 +1,4 @@
-package com.ssacation.ssacation.config;
+package com.ssacation.ssacation.global.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,11 +12,11 @@ public class OpenAPIConfig {
   public OpenAPI openAPI() {
 
     Info info = new Info()
-      .version("v1.0.0")
-      .title("API 타이틀")
-      .description("API Description");
+        .version("v1.0.0")
+        .title("API 타이틀")
+        .description("API Description");
 
     return new OpenAPI()
-      .info(info);
+        .info(info);
   }
 }
