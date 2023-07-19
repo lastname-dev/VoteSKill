@@ -4,9 +4,9 @@ spring:
       - classpath:application-oauth.yml
 
   datasource:
-    url: jdbc:mysql://localhost:3306/ssacation?serverTimezone=UTC&characterEncoding=UTF-8
-    username: ssafy
-    password: ssafy123
+    url: jdbc:mysql://stg-yswa-kr-practice-db-master.mariadb.database.azure.com:3306/S09P12A808?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
+    username: S09P12A808@stg-yswa-kr-practice-db-master.mariadb.database.azure.com
+    password: qGTLED3jP0
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:

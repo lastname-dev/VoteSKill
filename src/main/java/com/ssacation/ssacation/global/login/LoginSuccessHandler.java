@@ -10,8 +10,8 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import com.ssacation.ssacation.global.jwt.JwtService;
 import com.ssacation.ssacation.user.UserRepository;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Slf4j
 @RequiredArgsConstructor
