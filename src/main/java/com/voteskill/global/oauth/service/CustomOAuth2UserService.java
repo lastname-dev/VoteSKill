@@ -1,5 +1,8 @@
-package com.ssacation.ssacation.global.oauth;
+package com.voteskill.global.oauth;
 
+import com.voteskill.user.common.SocialType;
+import com.voteskill.user.entity.UserEntity;
+import com.voteskill.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -9,10 +12,6 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-
-import com.ssacation.ssacation.user.common.SocialType;
-import com.ssacation.ssacation.user.entity.UserEntity;
-import com.ssacation.ssacation.user.repository.UserRepository;
 
 import java.util.Collections;
 import java.util.Map;

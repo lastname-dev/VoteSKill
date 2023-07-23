@@ -1,5 +1,5 @@
 
- package com.ssacation.ssacation.global.oauth;
+ package com.voteskill.global.oauth;
 
  import com.fasterxml.jackson.core.JsonProcessingException;
  import org.springframework.http.ResponseEntity;
@@ -20,15 +20,15 @@
  */
  @CrossOrigin
  @ResponseBody
- @GetMapping("/kakao")
+ @GetMapping("")
  public ResponseEntity<?> kakaoCallback(@RequestParam String code) throws JsonProcessingException {
 //  accessToken 발급받기
   String accessToken = oAuthService.getKakaoAccessToken(code);
-  System.out.println("zzz");
 
 //  userInfo 받아오기
   Object userInfo = oAuthService.getUserInfo(accessToken);
-
+  System.out.println(userInfo);
+// Todo: 회원 유무 확인 및 jwt token 반환
  return ResponseEntity.ok("성공~!");
  }
  }
