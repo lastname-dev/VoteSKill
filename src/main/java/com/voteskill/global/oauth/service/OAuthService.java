@@ -1,5 +1,5 @@
  // WebClient를 활용한 SNS 로그인 서비스
- package com.ssacation.ssacation.global.oauth;
+ package com.voteskill.global.oauth;
 
  import com.fasterxml.jackson.core.JsonProcessingException;
  import com.fasterxml.jackson.databind.JsonNode;
@@ -89,24 +89,7 @@
  // 액세스 토큰으로 카카오 서버에서 유저 정보 받아오기
  public Object getUserInfo(String accessToken) throws JsonProcessingException {
 
-// String kakaoApiUrl = "https://kapi.kakao.com";
-// // webClient 설정
-// WebClient kakaoApiWebClient = WebClient.builder()
-// .baseUrl(kakaoApiUrl)
-// .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-// .build();
-//
-// // 카카오 Info API 설정
-// @SuppressWarnings("unchecked")
-// Map<String, Object> infoResponse = kakaoApiWebClient
-// .post()
-// .uri(uriBuilder -> uriBuilder
-// .path("/v2/user/me")
-// .build())
-// .header("Authorization", "Bearer " + accessToken)
-// .retrieve()
-// .bodyToMono(Map.class)
-// .block();
+
 //
 // @SuppressWarnings("unchecked")
 // Map<String, Object> kakaoAccountMap = (Map<String, Object>)
@@ -163,12 +146,12 @@
   String responseBody = response.getBody();
   ObjectMapper objectMapper = new ObjectMapper();
   JsonNode jsonNode = objectMapper.readTree(responseBody);
+  System.out.println(jsonNode);
   String nickname = jsonNode.get("properties")
           .get("nickname").asText();
-//  String email = jsonNode.get("kakao_account")
-//          .get("email").asText();
+  String social_id = jsonNode.get("properties")
+          .get("id").asText();
 
-  System.out.println("카카오 사용자 정보: "  + nickname );
   HashMap<String, Object> responseMap = new HashMap<>();
   responseMap.put("nickname",nickname);
 //  responseMap.put("email",email);
