@@ -10,7 +10,7 @@ import com.ssacation.ssacation.global.login.LoginSuccessHandler;
 import com.ssacation.ssacation.global.oauth.CustomOAuth2UserService;
 import com.ssacation.ssacation.global.oauth.OAuth2LoginFailureHandler;
 import com.ssacation.ssacation.global.oauth.OAuth2LoginSuccessHandler;
-import com.ssacation.ssacation.user.UserRepository;
+import com.ssacation.ssacation.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -46,7 +46,7 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http
+    http.cors().and()
           .formLogin().disable() // FormLogin 사용 안함
           .httpBasic().disable() // httpBasic 사용 안함
           .csrf().disable() // csrf 보안 사용 안함
@@ -62,10 +62,10 @@ public class SecurityConfig {
 
         // 아이콘, css, js 관련
         // 기본 페이지, css, image, js 하위 폴더에 있는 자료들은 모두 접근 가능, swagger-ui에 접근 가능
-        .requestMatchers ("/", "/sign-up", "/css/**", "/images/**", "/js/**", "/favicon.ico",
-            "/v3/api-docs/**", "/swagger-ui/**")
+            .antMatchers("/","/css/**","/images/**","/js/**","/favicon.ico","/h2-console/**").permitAll()
+            .antMatchers("/sign-up","/v3/api-docs/**","/swagger-ui/**")
         .permitAll()
-        .anyRequest().authenticated() // 위의 경로 이외에는 모두 인증된 사용자만 접근 가능
+//        .anyRequest().authenticated() // 위의 경로 이외에는 모두 인증된 사용자만 접근 가능
         .and()
 
         // 소셜 로그인 설정

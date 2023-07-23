@@ -1,12 +1,14 @@
-package com.ssacation.ssacation.user;
+package com.ssacation.ssacation.user.entity;
 
+import com.ssacation.ssacation.user.common.Role;
+import com.ssacation.ssacation.user.common.SocialType;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Objects;
 import java.util.stream.Stream;
 
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import lombok.AllArgsConstructor;

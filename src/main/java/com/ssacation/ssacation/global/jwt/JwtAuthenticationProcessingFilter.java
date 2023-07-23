@@ -1,9 +1,9 @@
 package com.ssacation.ssacation.global.jwt;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,8 +14,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.ssacation.ssacation.user.UserEntity;
-import com.ssacation.ssacation.user.UserRepository;
+import com.ssacation.ssacation.user.entity.UserEntity;
+import com.ssacation.ssacation.user.repository.UserRepository;
 
 
 import java.io.IOException;
@@ -47,6 +47,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
+
 
     if (request.getRequestURI().equals(NO_CHECK_URL)) {
 
@@ -87,7 +88,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
    * 그 후 JwtService.sendAccessTokenAndRefreshToken()으로 응답 헤더에 보냄
    */
   public void checkRefreshTokenAndReIssueAccessToken(HttpServletResponse response, String refreshToken) {
-    
+
     userRepository.findByRefreshToken(refreshToken)
         .ifPresent(user -> {
 
@@ -124,7 +125,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
   public void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response,
       FilterChain filterChain) throws ServletException, IOException {
 
-    log.info("checkAccessTokenAndAuthentication() 호출");
+    log.info("checkAccessTokenAndAuthentication() 호출 ");
 
     jwtService.extractAccessToken(request)
         .filter(jwtService::isTokenValid)
