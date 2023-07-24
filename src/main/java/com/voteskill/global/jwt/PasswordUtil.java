@@ -1,4 +1,4 @@
-package com.ssacation.ssacation.global.jwt;
+package com.voteskill.global.jwt;
 
 import java.util.Random;
 

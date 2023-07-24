@@ -1,16 +1,16 @@
-package com.ssacation.ssacation.global.config;
+package com.voteskill.global.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ssacation.ssacation.global.jwt.JwtAuthenticationProcessingFilter;
-import com.ssacation.ssacation.global.jwt.JwtService;
-import com.ssacation.ssacation.global.login.CustomJsonUsernamePasswordAuthenticationFilter;
-import com.ssacation.ssacation.global.login.LoginFailureHandler;
-import com.ssacation.ssacation.global.login.LoginService;
-import com.ssacation.ssacation.global.login.LoginSuccessHandler;
-import com.ssacation.ssacation.global.oauth.CustomOAuth2UserService;
-import com.ssacation.ssacation.global.oauth.OAuth2LoginFailureHandler;
-import com.ssacation.ssacation.global.oauth.OAuth2LoginSuccessHandler;
-import com.ssacation.ssacation.user.repository.UserRepository;
+import com.voteskill.global.jwt.JwtAuthenticationProcessingFilter;
+import com.voteskill.global.jwt.JwtService;
+import com.voteskill.global.login.CustomJsonUsernamePasswordAuthenticationFilter;
+import com.voteskill.global.login.LoginFailureHandler;
+import com.voteskill.global.login.LoginService;
+import com.voteskill.global.login.LoginSuccessHandler;
+import com.voteskill.global.oauth.service.CustomOAuth2UserService;
+import com.voteskill.global.oauth.handler.OAuth2LoginFailureHandler;
+import com.voteskill.global.oauth.handler.OAuth2LoginSuccessHandler;
+import com.voteskill.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

@@ -1,12 +1,11 @@
-package com.ssacation.ssacation.global.oauth;
+package com.voteskill.global.oauth;
 
 import java.util.Collection;
 import java.util.Map;
 
+import com.voteskill.user.common.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
-
-import com.ssacation.ssacation.user.common.Role;
 
 import lombok.Getter;
 

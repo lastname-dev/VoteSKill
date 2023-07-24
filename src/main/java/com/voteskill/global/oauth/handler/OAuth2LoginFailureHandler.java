@@ -1,4 +1,4 @@
-package com.voteskill.global.oauth;
+package com.voteskill.global.oauth.handler;
 
 import javax.servlet.ServletException;
 import lombok.extern.slf4j.Slf4j;

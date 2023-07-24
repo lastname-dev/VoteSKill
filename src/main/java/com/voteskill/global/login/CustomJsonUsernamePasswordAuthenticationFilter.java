@@ -1,4 +1,4 @@
-package com.ssacation.ssacation.global.login;
+package com.voteskill.global.login;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.authentication.AuthenticationServiceException;

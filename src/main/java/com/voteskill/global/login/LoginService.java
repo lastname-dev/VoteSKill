@@ -1,13 +1,13 @@
-package com.ssacation.ssacation.global.login;
+package com.voteskill.global.login;
 
+import com.voteskill.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.ssacation.ssacation.user.entity.UserEntity;
-import com.ssacation.ssacation.user.repository.UserRepository;
+import com.voteskill.user.entity.UserEntity;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +22,6 @@ public class LoginService implements UserDetailsService {
 
     return org.springframework.security.core.userdetails.User.builder()
         .username(user.getEmail())
-        .password(user.getPassword())
         .roles(user.getRole().name())
         .build();
   }

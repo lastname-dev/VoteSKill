@@ -1,9 +1,9 @@
-package com.ssacation.ssacation.user.controller;
+package com.voteskill.user.controller;
 
-import com.ssacation.ssacation.user.entity.UserEntity;
-import com.ssacation.ssacation.user.service.UserService;
-import com.ssacation.ssacation.user.dto.UserSignUpDto;
-import com.ssacation.ssacation.user.dto.UserUpdateDTO;
+import com.voteskill.user.entity.UserEntity;
+import com.voteskill.user.service.UserService;
+import com.voteskill.user.dto.UserSignUpDto;
+import com.voteskill.user.dto.UserUpdateDTO;
 import java.text.ParseException;
 import java.util.List;
 
@@ -26,17 +26,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@RequestMapping("api/user")
+@RequestMapping("/users")
 @RestController
 @Tag(name = "유저", description = "유저 관련 API 입니다.")
 public class UserController {
 
   private final UserService userService;
-
-  @GetMapping("/jwt-test")
-  public String jwtTest() {
-    return "jwtTest 요청 성공";
-  }
 
   /**
    * Member 생성
@@ -61,22 +56,22 @@ public class UserController {
    * @return
    * @throws ParseException
    */
-  @Operation(description = "유저 정보 수정 메서드입니다.")
-  @PutMapping()
-  public ResponseEntity<UserEntity> updateUser(@AuthenticationPrincipal UserDetails token,
-      @RequestBody UserUpdateDTO updateData) throws ParseException {
-
-    UserEntity updatedUser = userService.updateUserInfo(token, updateData);
-
-    if (!ObjectUtils.isEmpty(updatedUser)) {
-
-      return new ResponseEntity<>(updatedUser, HttpStatus.OK);
-
-    } else {
-
-      return new ResponseEntity<>(updatedUser, HttpStatus.NOT_FOUND);
-    }
-  }
+//  @Operation(description = "유저 정보 수정 메서드입니다.")
+//  @PutMapping()
+//  public ResponseEntity<UserEntity> updateUser(@AuthenticationPrincipal UserDetails token,
+//      @RequestBody UserUpdateDTO updateData) throws ParseException {
+//
+//    UserEntity updatedUser = userService.updateUserInfo(token, updateData);
+//
+//    if (!ObjectUtils.isEmpty(updatedUser)) {
+//
+//      return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+//
+//    } else {
+//
+//      return new ResponseEntity<>(updatedUser, HttpStatus.NOT_FOUND);
+//    }
+//  }
 
   /**
    * Member List 조회

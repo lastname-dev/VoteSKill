@@ -1,4 +1,4 @@
-package com.ssacation.ssacation.global.jwt;
+package com.voteskill.global.jwt;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -14,8 +14,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.ssacation.ssacation.user.entity.UserEntity;
-import com.ssacation.ssacation.user.repository.UserRepository;
+import com.voteskill.user.entity.UserEntity;
+import com.voteskill.user.repository.UserRepository;
 
 
 import java.io.IOException;
@@ -75,9 +75,9 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     // RefreshToken이 없거나 유효하지 않다면, AccessToken을 검사하고 인증을 처리하는 로직 수행
     // AccessToken이 없거나 유효하지 않다면, 인증 객체가 담기지 않은 상태로 다음 필터로 넘어가기 때문에 403 에러 발생
     // AccessToken이 유효하다면, 인증 객체가 담긴 상태로 다음 필터로 넘어가기 때문에 인증 성공
-    if (refreshToken == null) {
-      checkAccessTokenAndAuthentication(request, response, filterChain);
-    }
+//    if (refreshToken == null) {
+//      checkAccessTokenAndAuthentication(request, response, filterChain);
+//    }
   }
 
   /**
@@ -122,19 +122,19 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
    * 인증 허가 처리된 객체를 SecurityContextHolder에 담기
    * 그 후 다음 인증 필터로 진행
    */
-  public void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response,
-      FilterChain filterChain) throws ServletException, IOException {
-
-    log.info("checkAccessTokenAndAuthentication() 호출 ");
-
-    jwtService.extractAccessToken(request)
-        .filter(jwtService::isTokenValid)
-        .ifPresent(accessToken -> jwtService.extractEmail(accessToken)
-            .ifPresent(email -> userRepository.findByEmail(email)
-                .ifPresent(this::saveAuthentication)));
-
-    filterChain.doFilter(request, response);
-  }
+//  public void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response,
+//      FilterChain filterChain) throws ServletException, IOException {
+//
+//    log.info("checkAccessTokenAndAuthentication() 호출 ");
+//
+//    jwtService.extractAccessToken(request)
+//        .filter(jwtService::isTokenValid)
+//        .ifPresent(accessToken -> jwtService.extractEmail(accessToken)
+//            .ifPresent(email -> userRepository.findByEmail(email)
+//                .ifPresent(this::saveAuthentication)));
+//
+//    filterChain.doFilter(request, response);
+//  }
 
   /**
    * 인증 허가 메소드
@@ -153,21 +153,21 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
    * SecurityContextHolder.getContext()로 SecurityContext를 꺼낸 후,
    * setAuthentication()을 이용하여 위에서 만든 Authentication 객체에 대한 인증 허가 처리
    */
-  public void saveAuthentication(UserEntity myUser) {
-    String password = myUser.getPassword();
-    if (password == null) { // 소셜 로그인 유저의 비밀번호 임의로 설정 하여 소셜 로그인 유저도 인증 되도록 설정
-      password = PasswordUtil.generateRandomPassword();
-    }
-
-    UserDetails userDetailsUser = org.springframework.security.core.userdetails.User.builder()
-        .username(myUser.getEmail())
-        .password(password)
-        .roles(myUser.getRole().name())
-        .build();
-
-    Authentication authentication = new UsernamePasswordAuthenticationToken(userDetailsUser, null,
-        authoritiesMapper.mapAuthorities(userDetailsUser.getAuthorities()));
-
-    SecurityContextHolder.getContext().setAuthentication(authentication);
-  }
+//  public void saveAuthentication(UserEntity myUser) {
+//    String password = myUser.getPassword();
+//    if (password == null) { // 소셜 로그인 유저의 비밀번호 임의로 설정 하여 소셜 로그인 유저도 인증 되도록 설정
+//      password = PasswordUtil.generateRandomPassword();
+//    }
+//
+//    UserDetails userDetailsUser = org.springframework.security.core.userdetails.User.builder()
+//        .username(myUser.getEmail())
+//        .password(password)
+//        .roles(myUser.getRole().name())
+//        .build();
+//
+//    Authentication authentication = new UsernamePasswordAuthenticationToken(userDetailsUser, null,
+//        authoritiesMapper.mapAuthorities(userDetailsUser.getAuthorities()));
+//
+//    SecurityContextHolder.getContext().setAuthentication(authentication);
+//  }
 }

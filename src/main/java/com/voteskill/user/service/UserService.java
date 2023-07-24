@@ -1,10 +1,10 @@
-package com.ssacation.ssacation.user.service;
+package com.voteskill.user.service;
 
-import com.ssacation.ssacation.user.common.Role;
-import com.ssacation.ssacation.user.entity.UserEntity;
-import com.ssacation.ssacation.user.dto.UserSignUpDto;
-import com.ssacation.ssacation.user.dto.UserUpdateDTO;
-import com.ssacation.ssacation.user.repository.UserRepository;
+import com.voteskill.user.common.Role;
+import com.voteskill.user.entity.UserEntity;
+import com.voteskill.user.dto.UserSignUpDto;
+import com.voteskill.user.dto.UserUpdateDTO;
+import com.voteskill.user.repository.UserRepository;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
@@ -36,9 +36,6 @@ public class UserService {
    */
   public void signUp(UserSignUpDto userSignUpDto) throws Exception {
 
-    if (userRepository.findByEmail(userSignUpDto.getEmail()).isPresent()) {
-      throw new Exception("이미 존재하는 이메일입니다.");
-    }
 
     if (userRepository.findByNickname(userSignUpDto.getNickname()).isPresent()) {
       throw new Exception("이미 존재하는 닉네임입니다.");
@@ -46,53 +43,13 @@ public class UserService {
 
     UserEntity user = UserEntity.builder()
         .email(userSignUpDto.getEmail())
-        .password(userSignUpDto.getPassword())
         .nickname(userSignUpDto.getNickname())
         .role(Role.USER)
         .build();
 
-    user.passwordEncode(passwordEncoder);
     userRepository.save(user);
   }
 
-  /**
-   * User 수정
-   * JPA Repository의 save Method를 사용하여 객체를 갱신
-   * Entity인 Model 객체에 @Id로 설정한 키 값이 존재할 경우 해당하는 데이터를 갱신
-   * 만약 수정하려는 Entity인 Model 객체에 @Id 값이 존재하지 않으면 데이터가 추가되기 때문에
-   * 아래와 같이 갱신하고자 하는 User가 존재하는지 체크하는 로직을 추가
-   *
-   * @param model
-   * @return
-   */
-  public UserEntity updateUserInfo(UserDetails token, UserUpdateDTO updateData) {
-
-    UserEntity updatedUser = null;
-
-    try {
-
-      if (updateData.isUserUpdateEmpty())
-        throw new Exception("Required info is not qualified");
-
-      UserEntity existUser = getUser(token.getUsername());
-
-      existUser.setNickname(updateData.getNickname());
-      existUser.setBirthDay(updateData.getBirthDay());
-      existUser.setPhoneNum(updateData.getPhoneNum());
-
-      if (!existUser.isUserInfoEmpty())
-        existUser.authorizeUser();
-
-      // if (!ObjectUtils.isEmpty(existUser))
-      // updatedUser = userRepository.save(model);
-
-    } catch (Exception e) {
-
-      log.info("[Fail] e: " + e.toString());
-    }
-
-    return updatedUser;
-  }
 
   /**
    * User List 조회

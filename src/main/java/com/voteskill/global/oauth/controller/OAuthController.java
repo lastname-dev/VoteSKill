@@ -1,7 +1,8 @@
 
- package com.voteskill.global.oauth;
+ package com.voteskill.global.oauth.controller;
 
  import com.fasterxml.jackson.core.JsonProcessingException;
+ import com.voteskill.global.oauth.service.OAuthService;
  import org.springframework.http.ResponseEntity;
  import org.springframework.web.bind.annotation.*;
 

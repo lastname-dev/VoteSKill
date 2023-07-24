@@ -1,5 +1,7 @@
-package com.voteskill.global.oauth;
+package com.voteskill.global.oauth.service;
 
+import com.voteskill.global.oauth.CustomOAuth2User;
+import com.voteskill.global.oauth.OAuthAttributes;
 import com.voteskill.user.common.SocialType;
 import com.voteskill.user.entity.UserEntity;
 import com.voteskill.user.repository.UserRepository;

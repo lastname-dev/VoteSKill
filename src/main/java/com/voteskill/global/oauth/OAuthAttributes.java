@@ -1,18 +1,18 @@
-package com.ssacation.ssacation.global.oauth;
+package com.voteskill.global.oauth;
 
+import com.voteskill.user.common.Role;
+import com.voteskill.user.common.SocialType;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.util.Map;
 import java.util.UUID;
 
-import com.ssacation.ssacation.global.oauth.userinfo.GoogleOAuth2UserInfo;
-import com.ssacation.ssacation.global.oauth.userinfo.KakaoOAuth2UserInfo;
-import com.ssacation.ssacation.global.oauth.userinfo.NaverOAuth2UserInfo;
-import com.ssacation.ssacation.global.oauth.userinfo.OAuth2UserInfo;
-import com.ssacation.ssacation.user.common.Role;
-import com.ssacation.ssacation.user.common.SocialType;
-import com.ssacation.ssacation.user.entity.UserEntity;
+import com.voteskill.global.oauth.userinfo.GoogleOAuth2UserInfo;
+import com.voteskill.global.oauth.userinfo.KakaoOAuth2UserInfo;
+import com.voteskill.global.oauth.userinfo.NaverOAuth2UserInfo;
+import com.voteskill.global.oauth.userinfo.OAuth2UserInfo;
+import com.voteskill.user.entity.UserEntity;
 
 /**
  * 각 소셜에서 받아오는 데이터가 다르므로
@@ -38,7 +38,7 @@ public class OAuthAttributes {
    * 회원의 식별값(id), attributes, nameAttributeKey를 저장 후 build
    */
   public static OAuthAttributes of(SocialType socialType,
-      String userNameAttributeName, Map<String, Object> attributes) {
+                                   String userNameAttributeName, Map<String, Object> attributes) {
 
     if (socialType == SocialType.NAVER) {
       return ofNaver(userNameAttributeName, attributes);
@@ -85,7 +85,6 @@ public class OAuthAttributes {
         .socialId(oauth2UserInfo.getId())
         .email(UUID.randomUUID() + "@socialUser.com")
         .nickname(oauth2UserInfo.getNickname())
-        .imageUrl(oauth2UserInfo.getImageUrl())
         .role(Role.GUEST)
         .build();
   }

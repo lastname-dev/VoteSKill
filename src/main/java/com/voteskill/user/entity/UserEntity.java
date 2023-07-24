@@ -1,7 +1,7 @@
-package com.ssacation.ssacation.user.entity;
+package com.voteskill.user.entity;
 
-import com.ssacation.ssacation.user.common.Role;
-import com.ssacation.ssacation.user.common.SocialType;
+import com.voteskill.user.common.Role;
+import com.voteskill.user.common.SocialType;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Objects;
@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 
 
 import javax.persistence.*;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import lombok.AllArgsConstructor;
@@ -45,11 +46,11 @@ public class UserEntity {
   private Timestamp regDate;
 
   private String email;
-  private String password;
-  private Date birthDay;
+//  private String password;
+//  private Date birthDay;
   private String nickname;
-  private String imageUrl;
-  private String phoneNum;
+//  private String imageUrl;
+//  private String phoneNum;
   private String refreshToken;
   private String socialId; // 로그인한 소셜 타입의 식별자 값 (일반 로그인인 경우 null)
 
@@ -64,16 +65,8 @@ public class UserEntity {
     this.role = Role.USER;
   }
 
-  public boolean isUserInfoEmpty() {
-
-    return Stream.of(birthDay, phoneNum)
-        .anyMatch(Objects::isNull);
-  }
 
   // 비밀번호 암호화 메소드
-  public void passwordEncode(PasswordEncoder passwordEncoder) {
-    this.password = passwordEncoder.encode(this.password);
-  }
 
   public void updateRefreshToken(String updateRefreshToken) {
     this.refreshToken = updateRefreshToken;

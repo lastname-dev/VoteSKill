@@ -1,4 +1,4 @@
-package com.ssacation.ssacation.global.login;
+package com.voteskill.global.login;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;

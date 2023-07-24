@@ -1,7 +1,7 @@
-package com.ssacation.ssacation.user.repository;
+package com.voteskill.user.repository;
 
-import com.ssacation.ssacation.user.common.SocialType;
-import com.ssacation.ssacation.user.entity.UserEntity;
+import com.voteskill.user.common.SocialType;
+import com.voteskill.user.entity.UserEntity;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;

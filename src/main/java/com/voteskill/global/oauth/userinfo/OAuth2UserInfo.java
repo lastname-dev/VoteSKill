@@ -1,4 +1,4 @@
-package com.ssacation.ssacation.global.oauth.userinfo;
+package com.voteskill.global.oauth.userinfo;
 
 import java.util.Map;
 

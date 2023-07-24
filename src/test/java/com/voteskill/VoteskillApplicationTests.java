@@ -1,10 +1,9 @@
-package com.ssacation.ssacation;
+package com.voteskill;
 
-import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SsacationApplicationTests {
+class VoteskillApplicationTests {
 
 //	@Test
 //	void contextLoads() {

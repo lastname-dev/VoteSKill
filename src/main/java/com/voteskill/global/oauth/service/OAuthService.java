@@ -1,5 +1,5 @@
  // WebClient를 활용한 SNS 로그인 서비스
- package com.voteskill.global.oauth;
+ package com.voteskill.global.oauth.service;
 
  import com.fasterxml.jackson.core.JsonProcessingException;
  import com.fasterxml.jackson.databind.JsonNode;
@@ -23,7 +23,10 @@
  public class OAuthService {
   @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
  private String clientId;
-
+  @Value("${spring.security.oauth2.client.registration.kakao.client-secret}")
+ private String secretKey;
+  @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
+  private String redirectUri;
  // 카카오 서버로 부터 Access 토큰값 받아오기
  public String getKakaoAccessToken(String code) throws JsonProcessingException {
 
@@ -63,9 +66,9 @@
   MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
   params.add("grant_type", "authorization_code");
   params.add("client_id", clientId);
-  params.add("redirect_uri", "http://localhost:3000/kakao/callback");
+  params.add("redirect_uri", redirectUri);
   params.add("code", code);
-  params.add("client_secret","RQSaUWdjSekTZnjVQ1t5qHFYaV31XmBn");
+  params.add("client_secret",secretKey);
 
   // 요청하기 위해 헤더(Header)와 데이터(Body)를 합친다.
   // kakaoTokenRequest는 데이터(Body)와 헤더(Header)를 Entity가 된다.

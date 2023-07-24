@@ -1,4 +1,4 @@
-package com.ssacation.ssacation.global.config;
+package com.voteskill.global.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

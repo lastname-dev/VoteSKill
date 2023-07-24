@@ -1,4 +1,4 @@
-package com.ssacation.ssacation.user.common;
+package com.voteskill.user.common;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

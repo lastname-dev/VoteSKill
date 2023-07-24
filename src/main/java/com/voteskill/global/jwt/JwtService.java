@@ -1,8 +1,8 @@
-package com.ssacation.ssacation.global.jwt;
+package com.voteskill.global.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.ssacation.ssacation.user.repository.UserRepository;
+import com.voteskill.user.repository.UserRepository;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

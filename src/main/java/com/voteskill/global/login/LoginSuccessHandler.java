@@ -1,14 +1,13 @@
-package com.ssacation.ssacation.global.login;
+package com.voteskill.global.login;
 
+import com.voteskill.global.jwt.JwtService;
+import com.voteskill.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
-
-import com.ssacation.ssacation.global.jwt.JwtService;
-import com.ssacation.ssacation.user.repository.UserRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

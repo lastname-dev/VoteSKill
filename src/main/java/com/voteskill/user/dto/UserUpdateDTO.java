@@ -1,4 +1,4 @@
-package com.ssacation.ssacation.user.dto;
+package com.voteskill.user.dto;
 
 import java.sql.Date;
 import java.util.Objects;

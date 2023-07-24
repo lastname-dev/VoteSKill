@@ -1,8 +1,9 @@
-package com.voteskill.global.oauth;
+package com.voteskill.global.oauth.handler;
 
 import javax.servlet.ServletException;
 
 import com.voteskill.global.jwt.JwtService;
+import com.voteskill.global.oauth.CustomOAuth2User;
 import com.voteskill.user.common.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
