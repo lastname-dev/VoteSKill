@@ -51,7 +51,7 @@ public class JwtService {
   /**
    * AccessToken 생성 메소드
    */
-  public String createAccessToken(String email) {
+  public String createAccessToken(String id) {
     Date now = new Date();
     return JWT.create() // JWT 토큰을 생성하는 빌더 반환
         .withSubject(ACCESS_TOKEN_SUBJECT) // JWT의 Subject 지정
@@ -60,7 +60,7 @@ public class JwtService {
         // 클레임으로는 저희는 email 하나만 사용
         // 추가적으로 식별자나, 이름 등의 정보를 더 추가 가능
         // 추가할 경우 .withClaim(클래임 이름, 클래임 값) 으로 설정
-        .withClaim(EMAIL_CLAIM, email)
+        .withClaim(EMAIL_CLAIM, id)
         .sign(Algorithm.HMAC512(secretKey)); // HMAC512 알고리즘 사용
   }
 

@@ -95,9 +95,9 @@ public class UserController {
    */
   @Operation(description = "특정 유저 조회 메서드입니다.")
   @GetMapping("{id}")
-  public ResponseEntity<UserEntity> getUser(@PathVariable("email") String email) {
+  public ResponseEntity<UserEntity> getUser(@PathVariable("id") String id) {
 
-    UserEntity user = userService.getUser(email);
+    UserEntity user = userService.getUser(id);
 
     return new ResponseEntity<>(user, HttpStatus.OK);
   }

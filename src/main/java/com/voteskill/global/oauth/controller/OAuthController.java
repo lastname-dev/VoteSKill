@@ -1,35 +1,45 @@
 
- package com.voteskill.global.oauth.controller;
+package com.voteskill.global.oauth.controller;
 
- import com.fasterxml.jackson.core.JsonProcessingException;
- import com.voteskill.global.oauth.service.OAuthService;
- import org.springframework.http.ResponseEntity;
- import org.springframework.web.bind.annotation.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.nimbusds.oauth2.sdk.http.HTTPRequest;
+import com.voteskill.global.jwt.JwtService;
+import com.voteskill.global.oauth.service.OAuthService;
+import com.voteskill.user.dto.UserOauthInfoDto;
+import com.voteskill.user.entity.UserEntity;
+import com.voteskill.user.service.UserService;
+import java.util.HashMap;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
- import lombok.AllArgsConstructor;
+import lombok.AllArgsConstructor;
 
- @RestController
- @AllArgsConstructor
- @RequestMapping("/oauth")
- public class OAuthController {
+@RestController
+@AllArgsConstructor
+@RequestMapping("/oauth")
+public class OAuthController {
 
- private final OAuthService oAuthService;
+    private final OAuthService oAuthService;
 
- /**
- * 카카오 callback
- * [GET] /oauth/kakao/callback
- */
- @CrossOrigin
- @ResponseBody
- @GetMapping("")
- public ResponseEntity<?> kakaoCallback(@RequestParam String code) throws JsonProcessingException {
-//  accessToken 발급받기
-  String accessToken = oAuthService.getKakaoAccessToken(code);
+    /**
+     * 카카오 callback [GET] /oauth/kakao/callback
+     */
+    @CrossOrigin
+    @ResponseBody
+    @GetMapping("/kakao/callback")
+    public ResponseEntity<?> kakaoCallback(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+        //  accessToken 발급받기
+        String accessToken = oAuthService.getKakaoAccessToken(code);
+        //  userInfo 받아오기
+        UserOauthInfoDto userInfo = oAuthService.getUserInfo(accessToken);
+        System.out.println(userInfo); //userInfo 에 담긴 것 : nickname
 
-//  userInfo 받아오기
-  Object userInfo = oAuthService.getUserInfo(accessToken);
-  System.out.println(userInfo);
-// Todo: 회원 유무 확인 및 jwt token 반환
- return ResponseEntity.ok("성공~!");
- }
- }
+        // Todo: 회원 유무 확인 및 jwt token 반환
+        UserOauthInfoDto userOauthInfoDto = oAuthService.checkRegistedUser(userInfo, response);
+        return ResponseEntity.ok(userOauthInfoDto);
+    }
+}

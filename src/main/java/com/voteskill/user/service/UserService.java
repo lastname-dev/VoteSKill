@@ -7,6 +7,7 @@ import com.voteskill.user.dto.UserUpdateDTO;
 import com.voteskill.user.repository.UserRepository;
 import java.util.List;
 
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -70,9 +71,12 @@ public class UserService {
    * @param id
    * @return
    */
-  public UserEntity getUser(String email) {
+  public UserEntity getUser(String id) {
+    return userRepository.findById(id).get();
+  }
 
-    return userRepository.findByEmail(email).get();
+  public Optional<UserEntity> getUserByNickname(String nickname){
+    return userRepository.findByNickname(nickname);
   }
 
   /**
