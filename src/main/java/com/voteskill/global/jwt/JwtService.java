@@ -113,7 +113,6 @@ public class JwtService {
    * 헤더를 가져온 후 "Bearer"를 삭제(""로 replace)
    */
   public Optional<String> extractAccessToken(HttpServletRequest request) {
-
     return Optional.ofNullable(request.getHeader(accessHeader))
         .filter(refreshToken -> refreshToken.startsWith(BEARER))
         .map(refreshToken -> refreshToken.replace(BEARER, ""));
@@ -167,8 +166,10 @@ public class JwtService {
   public boolean isTokenValid(String token) {
     try {
       JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
+
       return true;
     } catch (Exception e) {
+
       log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
       return false;
     }

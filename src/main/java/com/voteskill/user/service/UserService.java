@@ -43,6 +43,7 @@ public class UserService {
     }
 
     UserEntity user = UserEntity.builder()
+        .socialId(userSignUpDto.getSocialId())
         .email(userSignUpDto.getEmail())
         .nickname(userSignUpDto.getNickname())
         .role(Role.USER)
@@ -72,7 +73,7 @@ public class UserService {
    * @return
    */
   public UserEntity getUser(String id) {
-    return userRepository.findById(id).get();
+    return userRepository.findBySocialId(id);
   }
 
   public Optional<UserEntity> getUserByNickname(String nickname){
