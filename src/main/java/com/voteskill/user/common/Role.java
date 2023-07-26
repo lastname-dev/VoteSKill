@@ -1,3 +1,4 @@
+
 package com.voteskill.user.common;
 
 import lombok.Getter;

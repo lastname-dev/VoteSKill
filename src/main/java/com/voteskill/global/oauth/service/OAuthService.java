@@ -4,26 +4,18 @@ package com.voteskill.global.oauth.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import com.voteskill.global.jwt.JwtService;
 import com.voteskill.user.dto.UserOauthInfoDto;
 import com.voteskill.user.service.UserService;
 import javax.servlet.http.HttpServletResponse;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.WebClient;
-
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @Service
@@ -48,27 +40,6 @@ public class OAuthService {
 
         String kakaoAuthUrl = "https://kauth.kakao.com/oauth/token";
 
-// WebClient kakaoWebClient = WebClient.builder()
-// .baseUrl(kakaoAuthUrl)
-// .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-// .build();
-//
-// // 카카오 Auth API 호출
-// @SuppressWarnings("unchecked")
-// Map<String, Object> tokenResponse = kakaoWebClient.post()
-// .uri(uriBuilder -> uriBuilder
-// .path("/oauth/token")
-// .queryParam("grant_type", "authorization_code")
-// .queryParam("client_id", clientId)
-// .queryParam("code", code)
-// .build())
-// .retrieve()
-// .bodyToMono(Map.class)
-// .block();
-
-// String accessToken = (String) tokenResponse.get("access_token");
-// log.info("accessToken : " + accessToken);
-// return accessToken;
         // POST 방식으로 key=value 데이터를 요청 (카카오쪽으로)
         // 이 때 필요한 라이브러리가 RestTemplate, 얘를 쓰면 http 요청을 편하게 할 수 있다.
         RestTemplate rt = new RestTemplate();
@@ -129,10 +100,6 @@ public class OAuthService {
         String nickname = jsonNode.get("properties")
             .get("nickname").asText();
         String social_id = jsonNode.get("id").asText();
-
-//        HashMap<String, Object> responseMap = new HashMap<>();
-//        responseMap.put("nickname", nickname);
-//        responseMap.put("social_id", social_id);
         UserOauthInfoDto userOauthInfoDto = new UserOauthInfoDto();
         userOauthInfoDto.setNickName(nickname);
         userOauthInfoDto.setSocial_id(social_id);
@@ -163,8 +130,6 @@ public class OAuthService {
         String ownJwtRefreshToken = jwtService.createRefreshToken();
         userOauthInfoDto.setOwnJwtAccessToken(ownJwtAccessToken);
         userOauthInfoDto.setOwnJwtRefreshToken(ownJwtRefreshToken);
-        //    System.out.println("access 토큰" + ownJwtAccessToken);
-        //    System.out.println("refresh 토큰" + ownJwtRefreshToken);
         jwtService.sendAccessAndRefreshToken(response, ownJwtAccessToken, ownJwtRefreshToken);
         return userOauthInfoDto;
     }

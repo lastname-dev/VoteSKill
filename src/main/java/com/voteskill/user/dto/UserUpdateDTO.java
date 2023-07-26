@@ -1,5 +1,4 @@
 package com.voteskill.user.dto;
-
 import java.sql.Date;
 import java.util.Objects;
 import java.util.stream.Stream;

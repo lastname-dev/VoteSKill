@@ -11,7 +11,6 @@ import com.voteskill.global.oauth.service.CustomOAuth2UserService;
 import com.voteskill.global.oauth.handler.OAuth2LoginFailureHandler;
 import com.voteskill.global.oauth.handler.OAuth2LoginSuccessHandler;
 import com.voteskill.user.repository.UserRepository;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -2,17 +2,9 @@
 package com.voteskill.global.oauth.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.nimbusds.oauth2.sdk.http.HTTPRequest;
-import com.voteskill.global.jwt.JwtService;
 import com.voteskill.global.oauth.service.OAuthService;
 import com.voteskill.user.dto.UserOauthInfoDto;
-import com.voteskill.user.entity.UserEntity;
-import com.voteskill.user.service.UserService;
-import java.util.HashMap;
-import java.util.List;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

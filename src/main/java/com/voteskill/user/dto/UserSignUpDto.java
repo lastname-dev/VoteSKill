@@ -1,5 +1,5 @@
-package com.voteskill.user.dto;
 
+package com.voteskill.user.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

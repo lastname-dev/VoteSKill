@@ -1,3 +1,4 @@
+
 package com.voteskill.user.repository;
 
 import com.voteskill.user.common.SocialType;

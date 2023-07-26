@@ -4,16 +4,13 @@ import com.voteskill.user.common.Role;
 import com.voteskill.user.common.SocialType;
 import lombok.Builder;
 import lombok.Getter;
-
 import java.util.Map;
 import java.util.UUID;
-
 import com.voteskill.global.oauth.userinfo.GoogleOAuth2UserInfo;
 import com.voteskill.global.oauth.userinfo.KakaoOAuth2UserInfo;
 import com.voteskill.global.oauth.userinfo.NaverOAuth2UserInfo;
 import com.voteskill.global.oauth.userinfo.OAuth2UserInfo;
 import com.voteskill.user.entity.UserEntity;
-
 /**
  * 각 소셜에서 받아오는 데이터가 다르므로
  * 소셜별로 데이터를 받는 데이터를 분기 처리하는 DTO 클래스
