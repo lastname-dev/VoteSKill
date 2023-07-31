@@ -1,6 +1,7 @@
 package io.openvidu.basic.java.service;
 
 import io.openvidu.basic.java.Dto.RoomEnterDto;
+import io.openvidu.basic.java.Person;
 import io.openvidu.basic.java.Room;
 import io.openvidu.basic.java.repository.RoomRepository;
 import io.openvidu.java.client.OpenVidu;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.naming.AuthenticationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,9 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class RoomService extends OpenVidu{
-
   private RoomRepository roomRepository;
-
   private RedisTemplate redisTemplate;
   private SetOperations<String,Room> setOperations;
   private HashOperations<String,String,Room> hashOperations;
@@ -66,10 +66,11 @@ public class RoomService extends OpenVidu{
 
     String name = (String) roomInfo.get("customSessionId");
     String password = (String) roomInfo.get("password");
-    int admitNumber = (int) roomInfo.get("admitNumber");
+//    int admitNumber = (int) roomInfo.get("admitNumber");
 
     //todo: 사용자 정보가지고 와서 Room host와 people에 넣어주기.
-    Room room = new Room(name,password,admitNumber,redisTemplate);
+//    Room room = new Room(name,password,admitNumber,redisTemplate);
+    Room room = new Room(name,password,1,redisTemplate);
 //    redisTemplate.opsForValue().set(roomKeyPrefix+name,room);
     hashOperations.put("room",name,room);
 //    stringRoomValueOperations.set(roomKeyPrefix+name,room);
@@ -77,14 +78,16 @@ public class RoomService extends OpenVidu{
 
   }
   public Room joinRoom(RoomEnterDto roomEnterDto) throws Exception {
-    Room room = (Room) redisTemplate.opsForValue().get(roomKeyPrefix+roomEnterDto.getRoomName());
+    Room room =  hashOperations.get("room", roomEnterDto.getRoomName());
+    log.info("입장 방 정보 : {}",room.getName());
     if(room == null){
       throw new Exception();
     }
-    if(room.getPassword()==null || room.getPassword() == roomEnterDto.getPassword()){
+    log.info("입장 하려는 방:{} , 입력한 비밀번호:{}",room.getPassword(),roomEnterDto.getPassword());
+    if(room.getPassword()==null || room.getPassword().equals(roomEnterDto.getPassword())){
       room.getPeople().add("안녕");
     }else{
-      throw new Exception();
+      throw new AuthenticationException("비밀번호가 틀렸습니다");
     }
     redisTemplate.opsForValue().set(roomKeyPrefix+roomEnterDto.getRoomName(),room);
     return room;
@@ -94,12 +97,14 @@ public class RoomService extends OpenVidu{
     return rooms;
   }
   public Room getRoom(String roomName){
-    Room room = (Room) redisTemplate.opsForValue().get(roomKeyPrefix+roomName);
+//    Room room = (Room) redisTemplate.opsForValue().get(roomKeyPrefix+roomName);
+    Room room = hashOperations.get("room", roomName);
     log.info("getRoom : {}",room);
     return room;
   }
   public void exitRoom(String roomName) {
-    roomRepository.deleteByName(roomName);
+      List<String> people = getRoom(roomName).getPeople();
+      //todo : people에서 해당 사람 삭제
   }
   public void deleteRoom(String roomName){
     roomRepository.deleteByName(roomName);
