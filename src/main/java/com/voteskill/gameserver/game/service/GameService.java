@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Service;
 public class GameService {
 
    // private final GameRepository gameRepository;
-    private final SimpMessagingTemplate messagingTemplate;
 
     /**
      * 게임 시작 시 플레이어에게 역할을 부여하는 메소드
@@ -50,27 +48,7 @@ public class GameService {
      * 부여된 역할 정보를 웹소켓으로 보내는 메서드
      */
     public void notifyRoles(GameStartResponseDto gameStartResponseDto) {
-        messagingTemplate.convertAndSend("/topic/roles/" + gameStartResponseDto);
+//        messagingTemplate.convertAndSend("/topic/roles/" + gameStartResponseDto);
     }
-
-    /*
-    *
-    * // JavaScript를 사용한 웹소켓 구독 예시 (프론트엔드 프레임워크나 기술 스택에 맞게 수정 가능)
-const socket = new WebSocket('ws://your-server-hostname/ws');
-
-socket.onopen = () => {
-  console.log('WebSocket 연결이 열렸습니다.');
-};
-
-socket.onmessage = (event) => {
-  const role = event.data; // 메시지에서 역할 정보를 가져옵니다.
-  console.log('받은 역할:', role);
-};
-
-socket.onclose = () => {
-  console.log('WebSocket 연결이 닫혔습니다.');
-};
-
-    * */
 
 }
