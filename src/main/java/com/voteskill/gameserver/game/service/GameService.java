@@ -17,6 +17,13 @@ public class GameService {
    // private final GameRepository gameRepository;
 
     /**
+     * 게임 시작 시 기본 설정 정보 초기화하는 메서드
+     * */
+    public void gameSetting(){
+
+    }
+
+    /**
      * 게임 시작 시 플레이어에게 역할을 부여하는 메소드
      * 필수 역할 분배 0: 마피아 1: 스파이 2: 의사 3: 경찰 (4명)
      * 랜덤 역할 분배 4: 기자 5: 군인  6:정치인 7:개발자 8: 갱스터 9:성직자 (택 2)

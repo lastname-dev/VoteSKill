@@ -55,6 +55,9 @@ public class SseController {
         return sseService.connect(roomId, userNickname);
     }
 
+    /**
+     * 서버에서 클라이언트에게 데이터를 보낼 때 사용하는 메서드
+     * */
     @PostMapping("/send-data/{userNickname}")
     public void sendData(@PathVariable String userNickname) {
         sseService.notify( "roomID",userNickname, "connect test!!");
