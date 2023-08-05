@@ -1,9 +1,27 @@
 package com.voteskill.gameserver.game.domain;
 
+import com.voteskill.gameserver.game.dto.BasicGameSetting;
+import com.voteskill.gameserver.game.dto.GameStartDto;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class GameInfo {
-    List<Player> players;
-    int state ; // 1: 첫째날 낮, 2: 첫째날 밤 ... 시간에따라 자동으로 바뀌어야 함
-    //시간 설정
+
+    String gameRoomId; //게임방 아이디
+
+    List<Player> players; //게임에 참여한 플레이어 정보
+    /**
+     * state : 게임이 진행중인 방의 상태
+     * 홀수: 낮, 짝수 : 밤
+     * 1,2: 첫째 날 / 3,4: 둘째 날 / 5,6: 셋째 날 .....
+     * */
+    int state ;
+    //TODO : 시간 설정 및 클라이언트와의 동기화를 위한 설정 고민해야함
 }

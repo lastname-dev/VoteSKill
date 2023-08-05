@@ -1,7 +1,7 @@
 package com.voteskill.gameserver.sse;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -12,37 +12,62 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @RequiredArgsConstructor
 public class SseRepository {
 
-    // 모든 Emitters를 저장하는 ConcurrentHashMap
-    private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>(); //userNickname, 해당 emitter
-    private final Map<String, String > inGamePlayerList = new ConcurrentHashMap<>(); //gameRoomId, userNickname
+    // 방별로 유저 이름과 SSE Emitter를 매핑하는 맵
+    private Map<String, Map<String, SseEmitter>> emittersByRoomId; //방이름, 유저이름, 에미터
 
     /**
-     * 주어진 아이디와 이미터를 저장
-     * @param userNickname     - 사용자 userNickname.
-     * @param emitter - 이벤트 Emitter.
+     * 특정 방에 유저 이름과 SSE Emitter를 매핑하여 저장하기
+     * @param roomId - 방 ID
+     * @param userNickname - 유저 이름
+     * @param emitter - SSE Emitter
      */
     public void save(String roomId, String userNickname, SseEmitter emitter) {
-        log.info("userNickname" + userNickname);
-        log.info("roomId" + roomId);
-        log.info("emitter" + emitter.toString());
-        emitters.put(userNickname, emitter);
-        inGamePlayerList.put(roomId, userNickname);
+        emittersByRoomId.computeIfAbsent(roomId, key -> new HashMap<>()).put(userNickname, emitter);
     }
 
     /**
-     * 주어진 아이디의 Emitter를 제거
-     * @param userNickname - 사용자 아이디.
+     * 특정 방의 모든 유저 이름에 해당하는 SSE Emitter들을 가져오기
+     * @param roomId - 방 ID
+     * @param userNickname - 유저 이름
+     * @return 특정 방의 해당 유저 이름에 대한 SSE Emitter들의 목록
      */
-    public void deleteById(String userNickname) {
-        emitters.remove(userNickname);
+    public Map<String, SseEmitter> getAllEmittersByRoomAndUser(String roomId, String userNickname) {
+        return emittersByRoomId.getOrDefault(roomId, new HashMap<>());
     }
 
     /**
-     * 주어진 아이디의 Emitter를 가져옴.
-     * @param userNickname - 사용자 아이디.
-     * @return SseEmitter - 이벤트 Emitter.
+     * 특정 방의 모든 SSE Emitter들을 가져오기
+     * @param roomId - 방 ID
+     * @return 특정 방의 모든 SSE Emitter들의 목록
      */
-    public SseEmitter get(String userNickname) {
-        return emitters.get(userNickname);
+    public Map<String, SseEmitter> getAllEmittersByRoom(String roomId) {
+        return emittersByRoomId.getOrDefault(roomId, new HashMap<>());
+    }
+
+    /**
+     * 특정 방의 특정 유저 이름에 해당하는 SSE Emitter를 가져오기
+     * @param roomId - 방 ID
+     * @param userNickname - 유저 이름
+     * @return 특정 방의 해당 유저 이름에 대한 SSE Emitter
+     */
+    public SseEmitter getByRoomAndUser(String roomId, String userNickname) {
+        return emittersByRoomId.getOrDefault(roomId, new HashMap<>()).get(userNickname);
+    }
+
+    /**
+     * 특정 방의 특정 유저 이름에 해당하는 SSE Emitter를 삭제하기
+     * @param roomId - 방 ID
+     * @param userNickname - 유저 이름
+     */
+    public void delete(String roomId, String userNickname) {
+        emittersByRoomId.getOrDefault(roomId, new HashMap<>()).remove(userNickname);
+    }
+
+    /**
+     * 특정 방의 모든 SSE Emitter를 삭제하기
+     * @param roomId - 방 ID
+     */
+    public void deleteAll(String roomId) {
+        emittersByRoomId.remove(roomId);
     }
 }
