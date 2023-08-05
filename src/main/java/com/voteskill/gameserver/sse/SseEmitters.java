@@ -4,7 +4,6 @@ import com.voteskill.gameserver.game.domain.Role;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicLong;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -44,21 +43,6 @@ public class SseEmitters {
         return emitter;
     }
 
-    /**
-     * count 이벤트 발생
-     * */
-//    public void count() {
-//        long count = counter.incrementAndGet();
-//        emitters.forEach(emitter -> {
-//            try {
-//                emitter.send(SseEmitter.event()
-//                    .name("count")
-//                    .data(count));
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
-//        });
-//    }
     /**
      * kill 이벤트 발생
      * 특정 플레이어가 죽음

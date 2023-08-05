@@ -11,6 +11,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @Repository
 @RequiredArgsConstructor
 public class SseRepository {
+
     // 모든 Emitters를 저장하는 ConcurrentHashMap
     private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>(); //userNickname, 해당 emitter
     private final Map<String, String > inGamePlayerList = new ConcurrentHashMap<>(); //gameRoomId, userNickname
