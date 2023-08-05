@@ -4,7 +4,9 @@ import com.voteskill.gameserver.game.domain.Role;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-
+/**
+ * 각 사용자에게 부여된 역할을 알려주기 위해 사용할 DTO
+ * */
 @NoArgsConstructor
 @Getter
 public class DistributeRolesDto {

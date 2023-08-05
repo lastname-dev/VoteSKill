@@ -12,6 +12,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+/**
+ * 서버에서 관리하기 위해 가지고 있을 정보
+ * */
 public class GameInfo {
 
     String gameRoomId; //게임방 아이디

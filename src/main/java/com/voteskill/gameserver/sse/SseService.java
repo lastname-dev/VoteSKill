@@ -1,5 +1,10 @@
 package com.voteskill.gameserver.sse;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.voteskill.gameserver.game.domain.GameInfo;
+import com.voteskill.gameserver.game.dto.DistributeRolesDto;
+import com.voteskill.gameserver.game.dto.GameInfoResponseDto;
 import java.io.IOException;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -17,28 +22,7 @@ public class SseService {
     private static final Long DEFAULT_TIMEOUT = 60L * 1000 * 60;
 
     private final SseRepository sseRepository;
-
-//    /**
-//     * 클라이언트(플레이어)가 방 입장을 위해 호출하는 메서드.
-//     * @param userNickname - 플레이어의 닉네임, roomId - 입장한 방 아이디
-//     * @return SseEmitter - 서버에서 보낸 이벤트 Emitter
-//     */
-//    public SseEmitter connect(String roomId, String userNickname) {
-//        SseEmitter emitter = createEmitter(roomId, userNickname ) ;
-//        sendToClient(roomId, userNickname, "EventStream Created. [" + userNickname + " entered " + roomId + " .]"); //초기 연결 시 에러 방지를 위한 더미데이터
-//        return emitter;
-//    }
-//
-//    /**
-//     * 서버의 이벤트를 클라이언트에게 보내는 메서드
-//     * 다른 서비스 로직에서 이 메서드를 사용해 데이터를 Object event에 넣고 전송하면 된다.
-//     * @param userNickname - 메세지를 전송할 사용자의 아이디.
-//     * @param event  - 전송할 이벤트 객체.
-//     */
-//    public void notify(String roomId, String userNickname, Object event) {
-//        sendToClient(roomId, userNickname, event);
-//    }
-
+    private final ObjectMapper objectMapper; //JSON 형태의 문자열로 변환하여 데이터 전송하기 위함
 
     /**
      * 사용자 아이디를 기반으로 이벤트 Emitter를 생성
@@ -58,27 +42,58 @@ public class SseService {
     }
 
     /**
-     * 특정 방에 있는 모든 클라이언트들에게 같은 정보를 동시에 보내기
+     * 특정 방에 있는 모든 클라이언트들에게 GameInfo 정보를 보내기
      * @param roomId - 방 ID
-     * @param data - 보낼 데이터
+     * @param gameInfoResponseDto - 보낼 GameInfo 정보
      */
-    public void notifyAllInRoom(String roomId, String data) {
-        Map<String, SseEmitter> emittersByUser = sseRepository.getAllEmittersByRoom(roomId);
-        for (SseEmitter emitter : emittersByUser.values()) {
-            sendToEmitter(emitter, data);
+    public void notifyAllInRoom(String roomId, GameInfoResponseDto gameInfoResponseDto) {
+        String jsonGameInfo = null;
+        try {
+            jsonGameInfo = objectMapper.writeValueAsString(gameInfoResponseDto);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace(); // JSON 변환 실패 처리
+        }
+
+        if (jsonGameInfo != null) {
+            Map<String, SseEmitter> emittersByUser = sseRepository.getAllEmittersByRoom(roomId);
+            for (SseEmitter emitter : emittersByUser.values()) {
+                sendToEmitter(emitter, jsonGameInfo);
+            }
         }
     }
 
+//    /**
+//     * 특정 방에 있는 한 클라이언트에게 특정한 정보를 보내기
+//     * @param roomId - 방 ID
+//     * @param userNickname - 유저 이름
+//     * @param data - 보낼 데이터
+//     */
+//    public void notifyClient(String roomId, String userNickname, String data) {
+//        SseEmitter emitter = sseRepository.getByRoomAndUser(roomId, userNickname);
+//        if (emitter != null) {
+//            sendToEmitter(emitter, data);
+//        }
+//    }
+
     /**
-     * 특정 방에 있는 한 클라이언트에게 특정한 정보를 보내기
+     * 특정 사용자에게 부여된 역할 정보 보내기 - DistributeRolesDto 사용
      * @param roomId - 방 ID
      * @param userNickname - 유저 이름
-     * @param data - 보낼 데이터
+     * @param distributeRolesDto - 보낼 DistributeRolesDto 정보
      */
-    public void notifyClient(String roomId, String userNickname, String data) {
-        SseEmitter emitter = sseRepository.getByRoomAndUser(roomId, userNickname);
-        if (emitter != null) {
-            sendToEmitter(emitter, data);
+    public void sendRolesInfoToUser(String roomId, String userNickname, DistributeRolesDto distributeRolesDto) {
+        String jsonRolesInfo = null;
+        try {
+            jsonRolesInfo = objectMapper.writeValueAsString(distributeRolesDto);
+        } catch (JsonProcessingException e) {
+            // JSON 변환 실패 처리
+            e.printStackTrace();
+        }
+        if (jsonRolesInfo != null) {
+            SseEmitter emitter = sseRepository.getByRoomAndUser(roomId, userNickname);
+            if (emitter != null) {
+                sendToEmitter(emitter, jsonRolesInfo);
+            }
         }
     }
 
