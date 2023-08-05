@@ -17,7 +17,7 @@ public class GameService {
     /**
      * 게임 시작 시 기본 설정 정보 초기화하는 메서드
      * */
-    public void gameSetting(String roomId,GameStartDto gameStartDto){
+    public void gameSetting(String roomId, GameStartDto gameStartDto){
         GameInfo gameInfo = new GameInfo();
         gameInfo.setGameRoomId(roomId); //방 아이디
         gameInfo.setState(1); //1일차 낮
