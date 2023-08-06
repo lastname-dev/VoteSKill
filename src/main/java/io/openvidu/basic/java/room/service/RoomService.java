@@ -1,6 +1,6 @@
 package io.openvidu.basic.java.room.service;
 
-import io.openvidu.basic.java.room.Dto.RoomEnterDto;
+import io.openvidu.basic.java.room.dto.RoomEnterDto;
 import io.openvidu.basic.java.Room;
 import io.openvidu.basic.java.room.repository.RoomRepository;
 import io.openvidu.java.client.OpenVidu;

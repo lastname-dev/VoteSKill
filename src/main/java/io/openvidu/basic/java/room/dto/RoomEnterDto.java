@@ -1,8 +1,7 @@
-package io.openvidu.basic.java.room.Dto;
+package io.openvidu.basic.java.room.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @AllArgsConstructor
 @Getter
