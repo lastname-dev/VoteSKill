@@ -2,9 +2,9 @@ package com.voteskill.gameserver.sse;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.voteskill.gameserver.game.domain.GameInfo;
 import com.voteskill.gameserver.game.dto.DistributeRolesDto;
 import com.voteskill.gameserver.game.dto.GameInfoResponseDto;
+import com.voteskill.gameserver.game.dto.VoteResultResponseDto;
 import java.io.IOException;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -61,6 +61,30 @@ public class SseService {
             }
         }
     }
+
+    /**
+     * 같은 방에 있는 모든 클라이언트들에게 투표 결과를 보내기
+     * @param roomId - 방 ID
+     * @param responseDto - 보낼 투표 결과 리스트
+     */
+    public void sendVoteResultToAllInRoom(String roomId, VoteResultResponseDto responseDto) {
+
+        String jsonData = null;
+        try {
+            jsonData = objectMapper.writeValueAsString(responseDto);
+        } catch (JsonProcessingException e) {
+            // JSON 변환 실패 처리
+            e.printStackTrace();
+        }
+
+        if (jsonData != null) {
+            Map<String, SseEmitter> emittersByUser = sseRepository.getAllEmittersByRoom(roomId);
+            for (SseEmitter emitter : emittersByUser.values()) {
+                sendToEmitter(emitter, jsonData);
+            }
+        }
+    }
+
 
 //    /**
 //     * 특정 방에 있는 한 클라이언트에게 특정한 정보를 보내기

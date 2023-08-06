@@ -2,6 +2,7 @@ package com.voteskill.gameserver.sse;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -13,7 +14,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 public class SseRepository {
 
     // 방별로 유저 이름과 SSE Emitter를 매핑하는 맵
-    private Map<String, Map<String, SseEmitter>> emittersByRoomId; //방이름, 유저이름, 에미터
+    private Map<String, Map<String, SseEmitter>> emittersByRoomId = new HashMap<>(); //방이름, 유저이름, 에미터
 
     /**
      * 특정 방에 유저 이름과 SSE Emitter를 매핑하여 저장하기

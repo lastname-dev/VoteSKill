@@ -1,7 +1,5 @@
 package com.voteskill.gameserver.game.domain;
 
-import com.voteskill.gameserver.game.dto.BasicGameSetting;
-import com.voteskill.gameserver.game.dto.GameStartDto;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
