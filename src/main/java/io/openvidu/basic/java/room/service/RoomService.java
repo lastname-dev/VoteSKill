@@ -1,9 +1,8 @@
-package io.openvidu.basic.java.service;
+package io.openvidu.basic.java.room.service;
 
-import io.openvidu.basic.java.Dto.RoomEnterDto;
-import io.openvidu.basic.java.Person;
+import io.openvidu.basic.java.room.Dto.RoomEnterDto;
 import io.openvidu.basic.java.Room;
-import io.openvidu.basic.java.repository.RoomRepository;
+import io.openvidu.basic.java.room.repository.RoomRepository;
 import io.openvidu.java.client.OpenVidu;
 import io.openvidu.java.client.OpenViduHttpException;
 import io.openvidu.java.client.OpenViduJavaClientException;
@@ -12,15 +11,12 @@ import io.openvidu.java.client.SessionProperties;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.naming.AuthenticationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.dao.PermissionDeniedDataAccessException;
 import org.springframework.data.redis.core.*;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

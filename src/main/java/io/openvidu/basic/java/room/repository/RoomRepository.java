@@ -1,4 +1,4 @@
-package io.openvidu.basic.java.repository;
+package io.openvidu.basic.java.room.repository;
 
 
 import io.openvidu.basic.java.Room;

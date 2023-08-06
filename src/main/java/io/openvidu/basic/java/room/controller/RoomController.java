@@ -1,22 +1,15 @@
-package io.openvidu.basic.java.controller;
+package io.openvidu.basic.java.room.controller;
 
-import io.openvidu.basic.java.Dto.RoomEnterDto;
-import io.openvidu.basic.java.Dto.RoomEnterResponseDto;
+import io.openvidu.basic.java.room.Dto.RoomEnterDto;
+import io.openvidu.basic.java.room.Dto.RoomEnterResponseDto;
 import io.openvidu.basic.java.Room;
-import io.openvidu.basic.java.repository.RoomRepository;
-import io.openvidu.basic.java.service.RoomService;
+import io.openvidu.basic.java.room.service.RoomService;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import javax.annotation.PostConstruct;
-
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package io.openvidu.basic.java.Dto;
+package io.openvidu.basic.java.room.Dto;
 
 import io.openvidu.basic.java.Room;
 import lombok.AllArgsConstructor;
