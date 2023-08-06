@@ -9,4 +9,5 @@ import lombok.RequiredArgsConstructor;
 public class RoomEnterDto {
     String roomName;
     String password;
+    String nickname;
 }

@@ -31,10 +31,11 @@ public class Room implements Serializable {
   private int admitNumber;
 //  private List<Person> people;
   private List<String> people;
-  public Room(String name, String password,int admitNumber, RedisTemplate redisTemplate) {
+  public Room(String name, String password,int admitNumber, String host) {
     this.name = name;
     this.password = password;
     this.admitNumber = admitNumber;
+    this.host=host;
     this.people= new ArrayList<>();
   }
 //  public void addPerson(Person person){

@@ -62,11 +62,12 @@ public class RoomService extends OpenVidu{
 
     String name = (String) roomInfo.get("customSessionId");
     String password = (String) roomInfo.get("password");
+    String nickname = (String)roomInfo.get("nickname");
 //    int admitNumber = (int) roomInfo.get("admitNumber");
 
     //todo: 사용자 정보가지고 와서 Room host와 people에 넣어주기.
 //    Room room = new Room(name,password,admitNumber,redisTemplate);
-    Room room = new Room(name,password,1,redisTemplate);
+    Room room = new Room(name,password,1,nickname);
 //    redisTemplate.opsForValue().set(roomKeyPrefix+name,room);
     hashOperations.put("room",name,room);
 //    stringRoomValueOperations.set(roomKeyPrefix+name,room);
@@ -81,7 +82,7 @@ public class RoomService extends OpenVidu{
     }
     log.info("입장 하려는 방:{} , 입력한 비밀번호:{}",room.getPassword(),roomEnterDto.getPassword());
     if(room.getPassword()==null || room.getPassword().equals(roomEnterDto.getPassword())){
-      room.getPeople().add("안녕");
+      room.getPeople().add(roomEnterDto.getNickname());
     }else{
       throw new AuthenticationException("비밀번호가 틀렸습니다");
     }

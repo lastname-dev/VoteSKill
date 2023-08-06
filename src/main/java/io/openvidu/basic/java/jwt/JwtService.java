@@ -55,6 +55,12 @@ public class JwtService {
             return Optional.empty();
         }
     }
+    public String getNickName(HttpServletRequest request){
+        String accessToken = extractAccessToken(request).get();
+        log.info("accessTOken : {}",accessToken);
+        Optional<String> s = extractNickName(accessToken);
+        return s.get();
+    }
     public boolean isTokenValid(String token) {
         try {
             log.info("isTokenValid..? : {}",token);
