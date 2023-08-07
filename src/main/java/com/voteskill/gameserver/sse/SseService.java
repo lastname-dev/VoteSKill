@@ -33,6 +33,7 @@ public class SseService {
         SseEmitter emitter = new SseEmitter(DEFAULT_TIMEOUT );
         sseRepository.save(roomId, userNickname, emitter);
 
+
         // Emitter가 완료될 때(모든 데이터가 성공적으로 전송된 상태) Emitter를 삭제한다.
         emitter.onCompletion(() -> sseRepository.delete(roomId, userNickname));
         // Emitter가 타임아웃 되었을 때(지정된 시간동안 어떠한 이벤트도 전송되지 않았을 때) Emitter를 삭제한다.
@@ -43,9 +44,9 @@ public class SseService {
 
     /**
      * 특정 방에 있는 모든 클라이언트들에게 GameInfo 정보를 보내기
-     * @param roomId - 방 ID
-     * @param gameInfoResponseDto - 보낼 GameInfo 정보
-     */
+     * @param roomId 방 ID
+     *      * @param gameInfoResponseDto - 보낼 GameInfo 정보
+     *      */
     public void notifyAllInRoom(String roomId, GameInfoResponseDto gameInfoResponseDto) {
         String jsonGameInfo = null;
         try {

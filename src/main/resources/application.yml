@@ -1,7 +1,19 @@
-jwt:
-  secretKey: YeoMyeong808VoteSKillInGameToken
-  #  base64로 인코딩 된 암호키, HS512를 사용할 것이기 때문에, 512비트(64바이트) 이상이 되어야 함.
+#jwt:
+#  secretKey: YeoMyeong808VoteSKillInGameToken
+#  #  base64로 인코딩 된 암호키, HS512를 사용할 것이기 때문에, 512비트(64바이트) 이상이 되어야 함.
+#
+#  access:
+#    expiration: 3600000 # 1시간(60분) (1000L(ms -> s) * 60L(s -> m) * 60L(m -> h)), 토큰 만료시간 , 추후 확인 후 수정
+#    header: InGameRole
 
-  access:
-    expiration: 3600000 # 1시간(60분) (1000L(ms -> s) * 60L(s -> m) * 60L(m -> h)), 토큰 만료시간 , 추후 확인 후 수정
-    header: InGameRole
+
+
+spring:
+  redis:
+    lettuce:
+      pool:
+        max-idle: 10
+        max-active: 10
+        min-idle: 5
+    host: localhost
+    port: 6379

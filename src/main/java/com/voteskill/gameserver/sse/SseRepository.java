@@ -2,7 +2,6 @@ package com.voteskill.gameserver.sse;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -24,6 +23,26 @@ public class SseRepository {
      */
     public void save(String roomId, String userNickname, SseEmitter emitter) {
         emittersByRoomId.computeIfAbsent(roomId, key -> new HashMap<>()).put(userNickname, emitter);
+        printEmittersByRoomId();
+    }
+
+    //출력용
+    public void printEmittersByRoomId() {
+        for (Map.Entry<String, Map<String, SseEmitter>> entry : emittersByRoomId.entrySet()) {
+            String roomId = entry.getKey();
+            Map<String, SseEmitter> emittersInRoom = entry.getValue();
+
+            System.out.println("Room ID: " + roomId);
+
+            for (Map.Entry<String, SseEmitter> emitterEntry : emittersInRoom.entrySet()) {
+                String userNickname = emitterEntry.getKey();
+                SseEmitter emitter = emitterEntry.getValue();
+
+                System.out.println("  User Nickname: " + userNickname);
+                System.out.println("  SseEmitter: " + emitter);
+
+            }
+        }
     }
 
     /**
