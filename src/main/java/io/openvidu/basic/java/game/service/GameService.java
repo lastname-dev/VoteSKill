@@ -6,13 +6,18 @@ import io.openvidu.basic.java.game.domain.GameInfo;
 import io.openvidu.basic.java.game.domain.OtherRole;
 import io.openvidu.basic.java.game.domain.Player;
 import io.openvidu.basic.java.game.dto.SkillDto;
+import io.openvidu.basic.java.game.dto.SkillResultDto;
 import io.openvidu.basic.java.game.dto.VoteDto;
 import io.openvidu.basic.java.room.service.RoomService;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -41,7 +46,7 @@ public class GameService {
         Room room = roomService.getRoom(roomName);
         List<String> people = room.getPeople();
         List<Player> players = setRole(people);
-        GameInfo gameInfo = new GameInfo(roomName, players, 1);
+        GameInfo gameInfo = new GameInfo(roomName, players, 1,new ArrayList[99]);
         hashOperations.put(gameKeyPrefix, roomName, gameInfo);
     }
     public void vote(VoteDto voteDto){
@@ -57,13 +62,19 @@ public class GameService {
         GameInfo game = hashOperations.get(gameKeyPrefix, roomName);
         return game;
     }
-    public void skill(SkillDto skillDto) {
+    public ResponseEntity<SkillResultDto> skill(SkillDto skillDto) throws Exception {
         String caster = skillDto.getCaster();
         String target = skillDto.getTarget();
         String roomName = skillDto.getRoomId();
 
-        GameInfo gameInfo = hashOperations.get(gameKeyPrefix, roomName);
+        GameInfo gameInfo = getGame(roomName);
         List<Player> players = gameInfo.getPlayers();
+        for(Player player : players){
+            if(player.getNickname().equals(caster))
+                player.setPick(target);
+        }
+        hashOperations.put(gameKeyPrefix,roomName,gameInfo);
+
         String role = checkRole(gameInfo, caster);
 
         switch (role) {
@@ -81,27 +92,14 @@ public class GameService {
                 break;
             case "ROLE_POLICE":
                 // POLICE 직업의 스킬 처리 로직
-                policeSkill(caster, target, roomName);
-                break;
+                return policeSkill(caster, target, roomName);
             case "ROLE_REPORTER":
                 // DOCTOR 직업의 스킬 처리 로직
                 reporterSkill(caster, target, roomName);
                 break;
-            case "ROLE_SOLDIER":
-                // DOCTOR 직업의 스킬 처리 로직
-                soldierSkill(caster, target, roomName);
-                break;
-            case "ROLE_POLITICIAN":
-                // DOCTOR 직업의 스킬 처리 로직
-                politicianSkill(caster, target, roomName);
-                break;
-            case "ROLE_DEVELOPER":
-                // DOCTOR 직업의 스킬 처리 로직
-                developerSkill(caster, target, roomName);
-                break;
-            case "ROLE_GANGSTER":
-                gangsterSkill(caster, target, roomName);
-                break;
+//            case "ROLE_GANGSTER":
+//                gangsterSkill(caster, target, roomName);
+//                break;
             case "ROLE_PRIEST":
                 priestSkill(caster, target, roomName);
                 break;
@@ -110,7 +108,7 @@ public class GameService {
                 // 처리할 수 없는 직업일 경우, 에러 처리 또는 기본 처리 로직
                 break;
         }
-
+        return null;
     }
 
     public String checkRole(GameInfo gameInfo, String nickname) {
@@ -152,45 +150,46 @@ public class GameService {
 
     // MAFIA 직업의 스킬 처리 로직
     private void mafiaSkill(String caster, String target, String roomName) {
-
+        GameInfo gameInfo = getGame(roomName);
     }
 
     // SPY 직업의 스킬 처리 로직
     private void spySkill(String caster, String target, String roomName) {
         // 스킬 처리 로직 구현
-        // ...
+        GameInfo gameInfo = getGame(roomName);
     }
 
     // DOCTOR 직업의 스킬 처리 로직
     private void doctorSkill(String caster, String target, String roomName) {
         // 스킬 처리 로직 구현
-        // ...
+        GameInfo gameInfo = getGame(roomName);
     }
 
-    private void policeSkill(String caster, String target, String roomName) {
+    private ResponseEntity<SkillResultDto> policeSkill(String caster, String target, String roomName)
+        throws Exception {
         // 스킬 처리 로직 구현
-        // ...
+        GameInfo gameInfo = getGame(roomName);
+
+
+        if(!checkRole(gameInfo,caster).equals("ROLE_POLICE")) {
+            throw new Exception();
+        }
+        List<Player> players = gameInfo.getPlayers();
+        for(Player player : players){
+            if(player.getNickname().equals(target)){
+                if(player.getRole().equals("ROLE_MAFIA"))
+                    return new ResponseEntity<>(new SkillResultDto(target,true),HttpStatus.ACCEPTED);
+                return new ResponseEntity<>(new SkillResultDto(target,false),HttpStatus.ACCEPTED);
+            }
+        }
+        return new ResponseEntity<>(new SkillResultDto(target,false),HttpStatus.BAD_REQUEST);
     }
 
     private void reporterSkill(String caster, String target, String roomName) {
         // 스킬 처리 로직 구현
-        // ...
+        GameInfo gameInfo = getGame(roomName);
     }
 
-    private void soldierSkill(String caster, String target, String roomName) {
-        // 스킬 처리 로직 구현
-        // ...
-    }
-
-    private void politicianSkill(String caster, String target, String roomName) {
-        // 스킬 처리 로직 구현
-        // ...
-    }
-
-    private void developerSkill(String caster, String target, String roomName) {
-        // 스킬 처리 로직 구현
-        // ...
-    }
 
     private void gangsterSkill(String caster, String target, String roomName) {
         // 스킬 처리 로직 구현
@@ -199,7 +198,7 @@ public class GameService {
 
     private void priestSkill(String caster, String target, String roomName) {
         // 스킬 처리 로직 구현
-        // ...
+        GameInfo gameInfo = getGame(roomName);
     }
 
 }

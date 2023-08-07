@@ -74,12 +74,14 @@ public class RoomController {
 //	}
 	@GetMapping("/api/sessions")
 	public ResponseEntity<List<Room>> getRooms(){
+
 		List<Room> rooms = roomService.getRooms();
 		return new ResponseEntity<>(rooms,HttpStatus.OK);
 	}
 	@DeleteMapping("/api/sessions/{roomName}")
-	public ResponseEntity exitRooms(@PathVariable String roomName){
-		roomService.exitRoom(roomName);
+	public ResponseEntity exitRooms(@PathVariable String roomName,HttpServletRequest request){
+		String nickName = jwtService.getNickName(request);
+		roomService.exitRoom(nickName,roomName);
 		return new ResponseEntity(HttpStatus.OK);
 	}
 //	/**

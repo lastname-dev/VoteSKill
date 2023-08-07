@@ -2,11 +2,14 @@ package io.openvidu.basic.java.game.controller;
 
 import io.openvidu.basic.java.Room;
 import io.openvidu.basic.java.game.dto.SkillDto;
+import io.openvidu.basic.java.game.dto.SkillResultDto;
 import io.openvidu.basic.java.game.dto.VoteDto;
 import io.openvidu.basic.java.game.service.GameService;
 import io.openvidu.basic.java.jwt.JwtService;
 import io.openvidu.basic.java.room.service.RoomService;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,10 +29,11 @@ public class GameController {
         gameService.setting(roomId);
     }
     @PostMapping("/rooms/{roomId}/skill/{target}")
-    public void skill(@PathVariable String roomId,@PathVariable String target, HttpServletRequest request){
+    public ResponseEntity<SkillResultDto> skill(@PathVariable String roomId,@PathVariable String target, HttpServletRequest request)
+        throws Exception {
         String nickName = jwtService.getNickName(request);
         SkillDto skillDto = new SkillDto(roomId,nickName,target);
-        gameService.skill(skillDto);
+        return gameService.skill(skillDto);
     }
     @PostMapping("/rooms/{roomId}/vote/{target}")
     public void vote(@PathVariable String roomId,@PathVariable String target,HttpServletRequest request){
