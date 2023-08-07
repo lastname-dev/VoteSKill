@@ -1,7 +1,5 @@
 package com.voteskill.gameserver.game.domain;
 
-import com.voteskill.gameserver.game.dto.BasicGameSetting;
-import com.voteskill.gameserver.game.dto.GameStartDto;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,5 +24,7 @@ public class GameInfo {
      * 1,2: 첫째 날 / 3,4: 둘째 날 / 5,6: 셋째 날 .....
      * */
     int state ;
-    //TODO : 시간 설정 및 클라이언트와의 동기화를 위한 설정 고민해야함
+
+    int time = 120; //2분
+
 }

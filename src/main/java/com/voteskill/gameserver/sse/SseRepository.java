@@ -13,7 +13,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 public class SseRepository {
 
     // 방별로 유저 이름과 SSE Emitter를 매핑하는 맵
-    private Map<String, Map<String, SseEmitter>> emittersByRoomId; //방이름, 유저이름, 에미터
+    private Map<String, Map<String, SseEmitter>> emittersByRoomId = new HashMap<>(); //방이름, 유저이름, 에미터
 
     /**
      * 특정 방에 유저 이름과 SSE Emitter를 매핑하여 저장하기
@@ -23,6 +23,26 @@ public class SseRepository {
      */
     public void save(String roomId, String userNickname, SseEmitter emitter) {
         emittersByRoomId.computeIfAbsent(roomId, key -> new HashMap<>()).put(userNickname, emitter);
+        printEmittersByRoomId();
+    }
+
+    //출력용
+    public void printEmittersByRoomId() {
+        for (Map.Entry<String, Map<String, SseEmitter>> entry : emittersByRoomId.entrySet()) {
+            String roomId = entry.getKey();
+            Map<String, SseEmitter> emittersInRoom = entry.getValue();
+
+            System.out.println("Room ID: " + roomId);
+
+            for (Map.Entry<String, SseEmitter> emitterEntry : emittersInRoom.entrySet()) {
+                String userNickname = emitterEntry.getKey();
+                SseEmitter emitter = emitterEntry.getValue();
+
+                System.out.println("  User Nickname: " + userNickname);
+                System.out.println("  SseEmitter: " + emitter);
+
+            }
+        }
     }
 
     /**

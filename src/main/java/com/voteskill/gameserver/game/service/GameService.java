@@ -21,7 +21,7 @@ public class GameService {
         GameInfo gameInfo = new GameInfo();
         gameInfo.setGameRoomId(roomId); //방 아이디
         gameInfo.setState(1); //1일차 낮
-        gameInfo.setPlayers(distributionRoles(gameStartDto)); //
+        gameInfo.setPlayers(distributionRoles(gameStartDto));
     }
 
     /**
@@ -54,9 +54,8 @@ public class GameService {
         return basicGameSetting;
     }
 
-    //연결된 플레이어 이름으로 생성된 에미터 정보를 가져오는 메서드
-    public void setEmitterInfo(){
 
-    }
+
+
 
 }
