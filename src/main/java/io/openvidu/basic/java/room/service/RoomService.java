@@ -2,7 +2,6 @@ package io.openvidu.basic.java.room.service;
 
 import io.openvidu.basic.java.room.dto.RoomEnterDto;
 import io.openvidu.basic.java.Room;
-import io.openvidu.basic.java.room.repository.RoomRepository;
 import io.openvidu.java.client.OpenVidu;
 import io.openvidu.java.client.OpenViduHttpException;
 import io.openvidu.java.client.OpenViduJavaClientException;
@@ -25,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class RoomService extends OpenVidu{
-  private RoomRepository roomRepository;
   private RedisTemplate redisTemplate;
   private SetOperations<String,Room> setOperations;
   private HashOperations<String,String,Room> hashOperations;
@@ -33,10 +31,9 @@ public class RoomService extends OpenVidu{
   private final ValueOperations<String,Room> stringRoomValueOperations;
 
   @Autowired
-  public RoomService(@Value("${OPENVIDU_URL}")String hostname, @Value("${OPENVIDU_SECRET}")String secret,RoomRepository roomRepository,
+  public RoomService(@Value("${OPENVIDU_URL}")String hostname, @Value("${OPENVIDU_SECRET}")String secret,
       RedisTemplate redisTemplate) {
     super(hostname, secret);
-    this.roomRepository= roomRepository;
     this.redisTemplate = redisTemplate;
     this.stringRoomValueOperations = redisTemplate.opsForValue();
     this.setOperations = redisTemplate.opsForSet();
@@ -101,9 +98,7 @@ public class RoomService extends OpenVidu{
       List<String> people = getRoom(roomName).getPeople();
 
   }
-  public void deleteRoom(String roomName){
-    roomRepository.deleteByName(roomName);
-  }
+
 
   @Override
   public Session getActiveSession(String sessionId) {

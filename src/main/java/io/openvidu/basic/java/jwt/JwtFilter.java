@@ -24,7 +24,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserRepository userRepository;
-    private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
+//    private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -74,7 +74,10 @@ public class JwtFilter extends OncePerRequestFilter {
         jwtService.extractAccessToken(request)
                 .filter(jwtService::isTokenValid)
                 .ifPresent(accessToken -> jwtService.extractNickName(accessToken)
-                        .ifPresent(nickname -> saveAuthentication(userRepository.findByNickname(nickname).get())));
+                        .ifPresent((nickname) ->{
+                            log.info("nickname : {}",nickname );
+                            saveAuthentication(userRepository.findByNickname(nickname).get());})
+                        );
 //                .ifPresent(this::saveAuthentication)));
         if (jwtService.extractAccessToken(request).isPresent()) {
             if (!jwtService.isTokenValid(jwtService.extractAccessToken(request).get())) {
