@@ -6,7 +6,6 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
 
-@EnableCaching
 @SpringBootApplication
 //@PropertySource(value = {"classpath:application.properties"}, ignoreResourceNotFound = false)
 public class App {
