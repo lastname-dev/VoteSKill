@@ -71,6 +71,9 @@ public class GameService {
         GameInfo game = hashOperations.get(gameKeyPrefix, roomName);
         return game;
     }
+    public void test(GameInfo gameInfo){
+        hashOperations.put(gameKeyPrefix,gameInfo.getGameRoomId(),gameInfo);
+    }
     public ResponseEntity<SkillResultDto> skill(SkillDto skillDto) throws Exception {
         String caster = skillDto.getCaster();
         String target = skillDto.getTarget();

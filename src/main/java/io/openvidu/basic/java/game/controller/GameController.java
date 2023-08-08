@@ -1,12 +1,16 @@
 package io.openvidu.basic.java.game.controller;
 
 import io.openvidu.basic.java.Room;
+import io.openvidu.basic.java.game.domain.GameInfo;
+import io.openvidu.basic.java.game.domain.Player;
 import io.openvidu.basic.java.game.dto.SkillDto;
 import io.openvidu.basic.java.game.dto.SkillResultDto;
 import io.openvidu.basic.java.game.dto.VoteDto;
 import io.openvidu.basic.java.game.service.GameService;
 import io.openvidu.basic.java.jwt.JwtService;
 import io.openvidu.basic.java.room.service.RoomService;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +44,16 @@ public class GameController {
         String nickName = jwtService.getNickName(request);
         VoteDto voteDto = new VoteDto(roomId,nickName,target);
         gameService.vote(voteDto);
+    }
+
+    @PostMapping("/test")
+    public void test(){
+        List<Player> players = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            players.add(new Player("user"+i,"ROLE","PERSON",0,true,false));
+        }
+        GameInfo gameInfo = new GameInfo("testroom",players,1,new List[9],6);
+        gameService.test(gameInfo);
     }
 
 }
