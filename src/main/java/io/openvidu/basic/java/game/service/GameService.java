@@ -46,15 +46,24 @@ public class GameService {
         Room room = roomService.getRoom(roomName);
         List<String> people = room.getPeople();
         List<Player> players = setRole(people);
-        GameInfo gameInfo = new GameInfo(roomName, players, 1,new ArrayList[99]);
+        GameInfo gameInfo = new GameInfo(roomName, players, 1,new ArrayList[99],6);
         hashOperations.put(gameKeyPrefix, roomName, gameInfo);
     }
     public void vote(VoteDto voteDto){
         GameInfo gameInfo = getGame(voteDto.getRoomName());
         List<Player> players = gameInfo.getPlayers();
+        Boolean politician = false;
+        for(Player player: players){
+            if(player.getNickname().equals(voteDto.getCaster())&&player.getRole().equals("ROLE_POLITICIAN")){
+                politician= true;
+            }
+        }
         for(Player player : players){
-            if(player.getNickname().equals(voteDto.getTarget()))
+            if(player.getNickname().equals(voteDto.getTarget())) {
                 player.incrementVoteCount();
+                if(politician)
+                    player.incrementVoteCount();
+            }
         }
         hashOperations.put(gameKeyPrefix, voteDto.getRoomName(), gameInfo);
     }
@@ -77,37 +86,10 @@ public class GameService {
 
         String role = checkRole(gameInfo, caster);
 
-        switch (role) {
-            case "ROLE_MAFIA":
-                // MAFIA 직업의 스킬 처리 로직
-                mafiaSkill(caster, target, roomName);
-                break;
-            case "ROLE_SPY":
-                // SPY 직업의 스킬 처리 로직
-                spySkill(caster, target, roomName);
-                break;
-            case "ROLE_DOCTOR":
-                // DOCTOR 직업의 스킬 처리 로직
-                doctorSkill(caster, target, roomName);
-                break;
-            case "ROLE_POLICE":
-                // POLICE 직업의 스킬 처리 로직
-                return policeSkill(caster, target, roomName);
-            case "ROLE_REPORTER":
-                // DOCTOR 직업의 스킬 처리 로직
-                reporterSkill(caster, target, roomName);
-                break;
-//            case "ROLE_GANGSTER":
-//                gangsterSkill(caster, target, roomName);
-//                break;
-            case "ROLE_PRIEST":
-                priestSkill(caster, target, roomName);
-                break;
+        if(role.equals("ROLE_POLICE")){
+        // POLICE 직업의 스킬 처리 로직
+        return policeSkill(caster, target, roomName);}
 
-            default:
-                // 처리할 수 없는 직업일 경우, 에러 처리 또는 기본 처리 로직
-                break;
-        }
         return null;
     }
 
@@ -149,21 +131,6 @@ public class GameService {
     }
 
     // MAFIA 직업의 스킬 처리 로직
-    private void mafiaSkill(String caster, String target, String roomName) {
-        GameInfo gameInfo = getGame(roomName);
-    }
-
-    // SPY 직업의 스킬 처리 로직
-    private void spySkill(String caster, String target, String roomName) {
-        // 스킬 처리 로직 구현
-        GameInfo gameInfo = getGame(roomName);
-    }
-
-    // DOCTOR 직업의 스킬 처리 로직
-    private void doctorSkill(String caster, String target, String roomName) {
-        // 스킬 처리 로직 구현
-        GameInfo gameInfo = getGame(roomName);
-    }
 
     private ResponseEntity<SkillResultDto> policeSkill(String caster, String target, String roomName)
         throws Exception {

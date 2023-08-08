@@ -25,7 +25,7 @@ import io.openvidu.java.client.SessionProperties;
 
 import javax.servlet.http.HttpServletRequest;
 
-@CrossOrigin(origins = "*")
+@CrossOrigin
 @RestController
 @RequiredArgsConstructor
 @Slf4j

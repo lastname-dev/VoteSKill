@@ -18,6 +18,7 @@ public class GameInfo {
      * */
     private int state ;
     private List<String>[] messages;
+    int livePlayerNumber=6;
 
 
     //TODO : 시간 설정 및 클라이언트와의 동기화를 위한 설정 고민해야함
