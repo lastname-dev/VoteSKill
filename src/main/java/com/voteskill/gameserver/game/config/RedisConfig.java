@@ -26,23 +26,13 @@ public class RedisConfig {
 
     @Bean
     public RedisTemplate<?, ?> redisTemplate() {
-//    RedisTemplate<byte[], byte[]> redisTemplate = new RedisTemplate<>();
-//    // 아래 두 라인을 작성하지 않으면, key값이 \xac\xed\x00\x05t\x00\x03sol 이렇게 조회된다.
-//    redisTemplate.setKeySerializer(new StringRedisSerializer());
-//    redisTemplate.setValueSerializer(new StringRedisSerializer());
-//    redisTemplate.setConnectionFactory(redisConnectionFactory());
-//    return redisTemplate;
+
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory());
         redisTemplate.setKeySerializer(new StringRedisSerializer());
-//    redisTemplate.setValueSerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
-        // Hash Operation 사용 시
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-//    redisTemplate.setHashValueSerializer(new StringRedisSerializer());
         redisTemplate.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
-        // 혹은 아래 설정으로 모든 Key / Value Serialization을 변경할 수 있음
-//    redisTemplate.setDefaultSerializer(new StringRedisSerializer());
         redisTemplate.setDefaultSerializer(new GenericJackson2JsonRedisSerializer());
         return redisTemplate;
     }

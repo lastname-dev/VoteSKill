@@ -26,5 +26,6 @@ public class GameInfo {
     int state ;
 
     int time = 120; //2분
-
+    private List<String>[] messages;
+    int livePlayerNumber;
 }
