@@ -13,7 +13,7 @@ public class Utill {
   public Utill(RedisTemplate redisTemplate){
     this.redisTemplate=redisTemplate;
   }
-  public <T> T getData(String key,Class<T> classType) throws Exception{
-    String jsonResult = (String) redisTemplate.opsForHash().get(key,)
-  }
+//  public <T> T getData(String key,Class<T> classType) throws Exception{
+//    String jsonResult = (String) redisTemplate.opsForHash().get(key,)
+//  }
 }

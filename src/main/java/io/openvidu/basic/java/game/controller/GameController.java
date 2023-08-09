@@ -52,7 +52,7 @@ public class GameController {
         for (int i = 0; i < 6; i++) {
             players.add(new Player("user"+i,"ROLE","PERSON",0,true,false));
         }
-        GameInfo gameInfo = new GameInfo("testroom",players,1,new List[9],6);
+        GameInfo gameInfo = new GameInfo("testroom",players,1,0,new List[9],6);
         gameService.test(gameInfo);
     }
 
