@@ -1,11 +1,16 @@
 package com.voteskill.gameserver.game.dto;
 
 
+import com.voteskill.gameserver.game.domain.PlayerInfo;
+import java.util.List;
+
 /**
  * 전체 플레이어에게 공지하기 위한 dto
  * */
 public class GameInfoResponseDto {
     String gameRoomId; //게임방 아이디
+    List<PlayerInfo> players;
+    String message;
     /**
      * state : 게임이 진행중인 방의 상태
      * 홀수: 낮, 짝수 : 밤

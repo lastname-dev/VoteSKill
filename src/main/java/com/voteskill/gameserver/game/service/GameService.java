@@ -3,59 +3,197 @@ package com.voteskill.gameserver.game.service;
 import com.voteskill.gameserver.game.domain.GameInfo;
 import com.voteskill.gameserver.game.domain.Player;
 import com.voteskill.gameserver.game.domain.Role;
+import com.voteskill.gameserver.game.dto.GameInfoResponseDto;
 import com.voteskill.gameserver.game.dto.GameStartDto;
+import com.voteskill.gameserver.game.dto.SkillDto;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.connection.Message;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
+@Slf4j
 public class GameService {
 
-    /**
-     * 게임 시작 시 기본 설정 정보 초기화하는 메서드
-     * */
-    public void gameSetting(String roomId, GameStartDto gameStartDto){
-        GameInfo gameInfo = new GameInfo();
-        gameInfo.setGameRoomId(roomId); //방 아이디
-        gameInfo.setState(1); //1일차 낮
-        gameInfo.setPlayers(distributionRoles(gameStartDto));
+  private final String gameKeyPrefix = "game:";
+  private final HashOperations<String, String, GameInfo> hashOperations;
+  private RedisTemplate redisTemplate;
+
+  @Autowired
+  public GameService(RedisTemplate redisTemplate) {
+    this.redisTemplate = redisTemplate;
+    this.hashOperations = redisTemplate.opsForHash();
+  }
+
+  public void gameStart(String roomId) {
+
+  }
+
+  public void setState(String roomId) {
+
+  }
+
+  public void reset(String roomId) {
+    GameInfo gameInfo = getGame(roomId);
+    List<Player> players = gameInfo.getPlayers();
+    for (Player player : players) {
+      player.setPick("");
+      player.setVoteCount(0);
+    }
+  }
+
+  public void vote(String roomName) {
+    GameInfo gameInfo = getGame(roomName);
+    List<String> messages = gameInfo.getMessages()[gameInfo.getState()];
+    int playerNumber = gameInfo.getLivePlayerNumber();
+    List<Player> players = gameInfo.getPlayers();
+    for (Player player : players) {
+      if (player.getVoteCount() > (playerNumber + 1) / 2) {
+        if (player.getRole().equals("ROLE_POLITICIAN")) {
+          messages.add(politicianSkill(player.getNickname(), roomName));
+        }
+      }
+    }
+  }
+
+  public GameInfoResponseDto skill(String roomName) throws Exception {
+
+    GameInfo gameInfo = getGame(roomName);
+    List<Player> players = gameInfo.getPlayers();
+    List<String> messages = gameInfo.getMessages()[gameInfo.getState()];
+    String mafiaPick = "";
+    String docterPick = "";
+
+    for (Player player : players) {
+      String role = player.getRole();
+      String target = player.getPick();
+      switch (role) {
+        case "ROLE_MAFIA":
+          mafiaPick = player.getPick();
+          break;
+        case "ROLE_SPY":
+          spySkill(target, roomName);
+          break;
+        case "ROLE_DOCTOR":
+          docterPick = player.getPick();
+          break;
+        case "ROLE_REPORTER":
+            if (player.getUseSkill()) {
+                break;
+            }
+          player.setUseSkill(true);
+          messages.add(reporterSkill(target, roomName));
+          break;
+        case "ROLE_PRIEST":
+            if (player.getUseSkill()) {
+                break;
+            }
+          player.setUseSkill(true);
+          messages.add(priestSkill(target, roomName));
+          break;
+
+        default:
+          // 처리할 수 없는 직업일 경우, 에러 처리 또는 기본 처리 로직
+          break;
+      }
     }
 
-    /**
-     * 게임 시작 시 플레이어에게 역할을 부여하는 메소드
-     * 필수 역할 분배 0: 마피아 1: 스파이 2: 의사 3: 경찰 (4명)
-     * 랜덤 역할 분배 4: 기자 5: 군인  6:정치인 7:개발자 8: 갱스터 9:성직자 (택 2)
-     * Player 의 필드 (nickName, Role, alive, useSkill 스킬사용여부)
-     */
-    public List<Player>  distributionRoles(GameStartDto gameStartDto) {
-
-        List<Player> basicGameSetting = new ArrayList<>(); //서버가 가지고 있을 게임방 정보
-
-        List<String> playerList = gameStartDto.getPlayers();  //넘어온 사용자 정보
-        Collections.shuffle(playerList); //사용자 순서 재배치
-
-        //필수 역할 배정
-        basicGameSetting.add(new Player(playerList.get(0), Role.MAFIA, true, false));
-        basicGameSetting.add(new Player(playerList.get(1), Role.SPY, true, false));
-        basicGameSetting.add(new Player(playerList.get(2), Role.DOCTOR, true, false));
-        basicGameSetting.add(new Player(playerList.get(3), Role.POLICE, true, false));
-
-        //랜덤 역할 배정
-        List<Role> randomRoleList = new ArrayList<>();
-        Collections.addAll(randomRoleList, Role.REPORTER, Role.SOLDIER, Role.POLITICIAN,
-            Role.DEVELOPER, Role.GANGSTER, Role.PRIEST);
-        Collections.shuffle(randomRoleList); //역할 순서 재배치
-        basicGameSetting.add(new Player(playerList.get(4), randomRoleList.get(0), true, false));
-        basicGameSetting.add(new Player(playerList.get(5), randomRoleList.get(1), true, false));
-
-        return basicGameSetting;
+    if (!docterPick.equals(mafiaPick)) {
+      messages.add(mafiaSkill(mafiaPick, roomName));
+    } else {
+      messages.add(docterSkill(docterPick, roomName));
     }
+    hashOperations.put(gameKeyPrefix, roomName, gameInfo);
+    return null;
+  }
 
+  public String checkRole(GameInfo gameInfo, String nickname) {
 
+    List<Player> players = gameInfo.getPlayers();
+    for (Player player : players) {
+      if (player.getNickname().equals(nickname)) {
+        return player.getRole();
+      }
+    }
+    return null;
+  }
 
+  private String politicianSkill(String caster, String roomName) {
+    return caster + "는 정치인 입니다.";
+  }
+
+  private String mafiaSkill(String target, String roomName) {
+    GameInfo gameInfo = getGame(roomName);
+    gameInfo.setLivePlayerNumber(gameInfo.getLivePlayerNumber() - 1);
+    List<Player> players = gameInfo.getPlayers();
+    for (Player player : players) {
+      if (player.getNickname().equals(target)) {
+        if (player.getRole().equals("ROLE_SOLDIER") && !player.getUseSkill()) {
+          player.setUseSkill(true);
+          return target + " 이 군인이었습니다.";
+        }
+        player.setAlive(false);
+      }
+    }
+    return target + " 이 죽었습니다.";
+  }
+
+  // SPY 직업의 스킬 처리 로직
+  private String docterSkill(String target, String roomName) {
+    // 스킬 처리 로직 구현
+    return "의사가 " + target + "을 살렸습니다.";
+  }
+
+  private void spySkill(String target, String roomName) {
+    // 스킬 처리 로직 구현
+    GameInfo gameInfo = getGame(roomName);
+  }
+
+  // DOCTOR 직업의 스킬 처리 로직
+
+  private String reporterSkill(String target, String roomName) {
+    // 스킬 처리 로직 구현
+    GameInfo gameInfo = getGame(roomName);
+    List<Player> players = gameInfo.getPlayers();
+    String job = "";
+    for (Player player : players) {
+        if (player.getNickname().equals(target)) {
+            job = player.getRole();
+        }
+    }
+    return target + "의 직업은 " + job + " 입니다.";
+  }
+
+  private void gangsterSkill(String target, String roomName) {
+    // 스킬 처리 로직 구현
+    // ...
+  }
+
+  private String priestSkill(String target, String roomName) {
+    // 스킬 처리 로직 구현
+    GameInfo gameInfo = getGame(roomName);
+    gameInfo.setLivePlayerNumber(gameInfo.getLivePlayerNumber() + 1);
+    List<Player> players = gameInfo.getPlayers();
+    for (Player player : players) {
+        if (player.getNickname().equals(target)) {
+            player.setAlive(true);
+        }
+    }
+    return "성직자가 " + target + "을 살렸습니다.";
+  }
+
+  public GameInfo getGame(String roomName) {
+    GameInfo game = hashOperations.get(gameKeyPrefix, roomName);
+    return game;
+  }
 
 
 }
