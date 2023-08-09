@@ -31,15 +31,15 @@ public class GameController {
     private final RedisService redisService;
     private final GameSchedulerService gameSchedulerService;
 
-    @PostMapping("/start")
-    public String startScheduling() {
-        gameSchedulerService.startScheduling();
+    @PostMapping("/start/{roomId}")
+    public String startScheduling(@PathVariable String roomId) {
+        gameSchedulerService.startSchedulingForRoom(roomId);
         return "Scheduling started.";
     }
 
-    @PostMapping("/stop")
-    public String stopScheduling() {
-        gameSchedulerService.stopScheduling();
+    @PostMapping("/stop/{roomid}")
+    public String stopScheduling(@PathVariable String roomid) {
+        gameSchedulerService.stopSchedulingForRoom(roomid);
         return "Scheduling stopped.";
     }
 
