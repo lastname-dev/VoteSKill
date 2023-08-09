@@ -1,27 +1,19 @@
 package com.voteskill.gameserver.sse;
 
-import static io.lettuce.core.RedisURI.DEFAULT_TIMEOUT;
-
-import com.voteskill.gameserver.game.domain.Role;
-import com.voteskill.gameserver.game.dto.DistributeRolesDto;
 import com.voteskill.gameserver.game.dto.GameInfoResponseDto;
 import com.voteskill.gameserver.game.dto.VoteResultResponseDto;
 import com.voteskill.gameserver.game.service.GameService;
 import java.io.IOException;
-import java.util.HashMap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -32,11 +24,11 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @RequiredArgsConstructor
 public class SseController {
 
-    private final SseService sseService;
     private final GameService gameService;
 
     private final SseEmitters sseEmitters;
     private static final Long DEFAULT_TIMEOUT = 60L * 1000 * 60;
+
 
     @GetMapping(value = "/enter/{roomId}/{userNickname}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ResponseEntity<SseEmitter> connectRoom(@PathVariable String roomId, @PathVariable String userNickname) {
