@@ -1,5 +1,6 @@
 package io.openvidu.basic.java.room.service;
 
+import io.openvidu.basic.java.game.domain.GameInfo;
 import io.openvidu.basic.java.room.dto.RoomEnterDto;
 import io.openvidu.basic.java.Room;
 import io.openvidu.java.client.OpenVidu;

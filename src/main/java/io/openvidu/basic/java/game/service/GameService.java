@@ -36,7 +36,7 @@ public class GameService {
     private HashOperations<String, String, GameInfo> hashOperations;
 
     @Autowired
-    public GameService(RedisTemplate redisTemplate, RoomService roomService) {
+    public GameService(RedisTemplate<String,GameInfo> redisTemplate, RoomService roomService) {
         this.redisTemplate = redisTemplate;
         this.roomService = roomService;
         this.hashOperations = redisTemplate.opsForHash();
@@ -46,7 +46,7 @@ public class GameService {
         Room room = roomService.getRoom(roomName);
         List<String> people = room.getPeople();
         List<Player> players = setRole(people);
-        GameInfo gameInfo = new GameInfo(roomName, players, 1,0,new ArrayList[99],6);
+        GameInfo gameInfo = new GameInfo(roomName, players, 1,0,new ArrayList<>(),6);
         hashOperations.put(gameKeyPrefix, roomName, gameInfo);
     }
     public void vote(VoteDto voteDto){
@@ -72,8 +72,7 @@ public class GameService {
         return game;
     }
     public void test(GameInfo gameInfo){
-        redisTemplate.opsForValue().set(gameKeyPrefix+gameInfo.getGameRoomId(),gameInfo);
-        System.out.println(redisTemplate.opsForValue().get(gameKeyPrefix + gameInfo.getGameRoomId()));
+        hashOperations.put(gameKeyPrefix,gameInfo.getGameRoomId(),gameInfo);
     }
     public ResponseEntity<SkillResultDto> skill(SkillDto skillDto) throws Exception {
         String caster = skillDto.getCaster();

@@ -1,6 +1,7 @@
 package io.openvidu.basic.java.config;
 
 import io.openvidu.basic.java.Room;
+import io.openvidu.basic.java.game.domain.GameInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
@@ -31,29 +32,29 @@ public class RedisConfig {
     return new LettuceConnectionFactory(host, port);
   }
 
-  @Bean
-  public RedisTemplate<?, ?> redisTemplate() {
-    RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-    redisTemplate.setConnectionFactory(redisConnectionFactory());
-    redisTemplate.setKeySerializer(new StringRedisSerializer());
-    redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
-    redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-    redisTemplate.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
-    redisTemplate.setDefaultSerializer(new GenericJackson2JsonRedisSerializer());
-    return redisTemplate;
-  }
-  @Bean
-  public RedisTemplate<?, ?> redisTemplateTest() {
-
-    RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-    redisTemplate.setConnectionFactory(redisConnectionFactory());
-    redisTemplate.setKeySerializer(new StringRedisSerializer());
-    redisTemplate.setValueSerializer(new StringRedisSerializer());
-    redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-    redisTemplate.setHashValueSerializer(new StringRedisSerializer());
-
-    return redisTemplate;
-  }
+//  @Bean
+//  public RedisTemplate<?, ?> redisTemplate() {
+//    RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+//    redisTemplate.setConnectionFactory(redisConnectionFactory());
+//    redisTemplate.setKeySerializer(new StringRedisSerializer());
+//    redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+//    redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+//    redisTemplate.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
+//    redisTemplate.setDefaultSerializer(new GenericJackson2JsonRedisSerializer());
+//    return redisTemplate;
+//  }
+//  @Bean
+//  public RedisTemplate<?, ?> redisTemplateTest() {
+//
+//    RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+//    redisTemplate.setConnectionFactory(redisConnectionFactory());
+//    redisTemplate.setKeySerializer(new StringRedisSerializer());
+//    redisTemplate.setValueSerializer(new StringRedisSerializer());
+//    redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+//    redisTemplate.setHashValueSerializer(new StringRedisSerializer());
+//
+//    return redisTemplate;
+//  }
 
 
 
@@ -64,6 +65,19 @@ public class RedisConfig {
     stringRedisTemplate.setValueSerializer(new StringRedisSerializer());
     stringRedisTemplate.setConnectionFactory(redisConnectionFactory());
     return stringRedisTemplate;
+  }
+  @Bean
+  public RedisTemplate<?, ?> redisTemplate() {
+
+    RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+    redisTemplate.setConnectionFactory(redisConnectionFactory());
+    redisTemplate.setKeySerializer(new StringRedisSerializer());
+    redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+
+    redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer(GameInfo.class));
+    redisTemplate.setHashValueSerializer(new Jackson2JsonRedisSerializer(GameInfo.class));
+//    redisTemplate.setDefaultSerializer(new Jackson2JsonRedisSerializer(GameInfo.class));
+    return redisTemplate;
   }
 
 
