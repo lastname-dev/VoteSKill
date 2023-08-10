@@ -9,7 +9,7 @@ import lombok.Setter;
 import org.yaml.snakeyaml.emitter.Emitter;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor()
 @Builder
 @AllArgsConstructor
 @Setter
@@ -21,5 +21,7 @@ public class Player {
     private int voteCount;
     private Boolean alive; //생존 여부, true: 생존  false:  죽음
     private Boolean useSkill; // 스킬 사용여부, true: 사용, false: 미사용
-
+    public void incrementVoteCount() {
+        voteCount++;
+    }
 }

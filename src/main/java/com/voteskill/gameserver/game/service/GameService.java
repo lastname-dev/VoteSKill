@@ -3,6 +3,7 @@ package com.voteskill.gameserver.game.service;
 import com.voteskill.gameserver.game.domain.GameInfo;
 import com.voteskill.gameserver.game.domain.Player;
 import com.voteskill.gameserver.game.domain.Role;
+import com.voteskill.gameserver.game.domain.Room;
 import com.voteskill.gameserver.game.dto.GameInfoResponseDto;
 import com.voteskill.gameserver.game.dto.GameStartDto;
 import com.voteskill.gameserver.game.dto.SkillDto;
@@ -33,6 +34,13 @@ public class GameService {
     this.hashOperations = redisTemplate.opsForHash();
   }
 
+  public void test(GameInfo gameInfo){
+
+    hashOperations.put(gameKeyPrefix,gameInfo.getGameRoomId(),gameInfo);
+
+  }
+
+
   public void gameStart(String roomId) {
 
   }
@@ -52,7 +60,7 @@ public class GameService {
 
   public void vote(String roomName) {
     GameInfo gameInfo = getGame(roomName);
-    List<String> messages = gameInfo.getMessages()[gameInfo.getState()];
+    List<String> messages = gameInfo.getMessages();
     int playerNumber = gameInfo.getLivePlayerNumber();
     List<Player> players = gameInfo.getPlayers();
     for (Player player : players) {
@@ -68,13 +76,14 @@ public class GameService {
 
     GameInfo gameInfo = getGame(roomName);
     List<Player> players = gameInfo.getPlayers();
-    List<String> messages = gameInfo.getMessages()[gameInfo.getState()];
+    List<String> messages = gameInfo.getMessages();
     String mafiaPick = "";
     String docterPick = "";
 
     for (Player player : players) {
       String role = player.getRole();
       String target = player.getPick();
+      if(target.equals("")) continue;
       switch (role) {
         case "ROLE_MAFIA":
           mafiaPick = player.getPick();
@@ -192,7 +201,15 @@ public class GameService {
 
   public GameInfo getGame(String roomName) {
     GameInfo game = hashOperations.get(gameKeyPrefix, roomName);
+    log.info("game : {}",game);
     return game;
+  }
+  public List<GameInfo> getGames(){
+    List<GameInfo> values = hashOperations.values(gameKeyPrefix);
+    return values;
+  }
+  public void putGame(GameInfo gameInfo){
+    hashOperations.put(gameKeyPrefix,gameInfo.getGameRoomId(),gameInfo);
   }
 
 
