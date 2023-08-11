@@ -30,6 +30,7 @@ public class JwtService {
     private static final String BEARER = "Bearer ";
 
     public Optional<String> extractAccessToken(HttpServletRequest request) {
+        log.info("받아온 액세스토큰 : {}",request.getHeader(accessHeader));
         return Optional.ofNullable(request.getHeader(accessHeader))
                 .filter(refreshToken -> refreshToken.startsWith(BEARER))
                 .map(refreshToken -> refreshToken.replace(BEARER, ""));

@@ -13,6 +13,7 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
@@ -29,25 +30,30 @@ import java.util.Random;
 @Slf4j
 public class GameService {
 
+    @Autowired
     private RoomService roomService;
 
     private final String gameKeyPrefix = "game:";
-    private RedisTemplate redisTemplate;
-    private HashOperations<String, String, GameInfo> hashOperations;
+
 
     @Autowired
-    public GameService(RedisTemplate redisTemplate, RoomService roomService) {
-        this.redisTemplate = redisTemplate;
-        this.roomService = roomService;
-        this.hashOperations = redisTemplate.opsForHash();
-    }
+    @Qualifier("redisTemplate")
+    private RedisTemplate redisTemplate;
+//    private HashOperations<String, String, GameInfo> hashOperations;
+
+//    @Autowired
+//    public GameService(RedisTemplate<String,GameInfo> redisTemplate, RoomService roomService) {
+//        this.redisTemplate = redisTemplate;
+//        this.roomService = roomService;
+//        this.hashOperations = redisTemplate.opsForHash();
+//    }
 
     public void setting(String roomName) {
         Room room = roomService.getRoom(roomName);
         List<String> people = room.getPeople();
         List<Player> players = setRole(people);
-        GameInfo gameInfo = new GameInfo(roomName, players, 1,new ArrayList[99],6);
-        hashOperations.put(gameKeyPrefix, roomName, gameInfo);
+        GameInfo gameInfo = new GameInfo(roomName, players, 1,0,new ArrayList<>(),6);
+        redisTemplate.opsForHash().put(gameKeyPrefix, roomName, gameInfo);
     }
     public void vote(VoteDto voteDto){
         GameInfo gameInfo = getGame(voteDto.getRoomName());
@@ -65,11 +71,14 @@ public class GameService {
                     player.incrementVoteCount();
             }
         }
-        hashOperations.put(gameKeyPrefix, voteDto.getRoomName(), gameInfo);
+        redisTemplate.opsForHash().put(gameKeyPrefix, voteDto.getRoomName(), gameInfo);
     }
     public GameInfo getGame(String roomName){
-        GameInfo game = hashOperations.get(gameKeyPrefix, roomName);
+        GameInfo game = (GameInfo) redisTemplate.opsForHash().get(gameKeyPrefix, roomName);
         return game;
+    }
+    public void test(GameInfo gameInfo){
+        redisTemplate.opsForHash().put(gameKeyPrefix,gameInfo.getGameRoomId(),gameInfo);
     }
     public ResponseEntity<SkillResultDto> skill(SkillDto skillDto) throws Exception {
         String caster = skillDto.getCaster();
@@ -82,7 +91,7 @@ public class GameService {
             if(player.getNickname().equals(caster))
                 player.setPick(target);
         }
-        hashOperations.put(gameKeyPrefix,roomName,gameInfo);
+        redisTemplate.opsForHash().put(gameKeyPrefix,roomName,gameInfo);
 
         String role = checkRole(gameInfo, caster);
 

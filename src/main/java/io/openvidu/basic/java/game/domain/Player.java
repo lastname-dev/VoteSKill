@@ -2,11 +2,13 @@ package io.openvidu.basic.java.game.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @AllArgsConstructor
 @Getter
 @Setter
+@NoArgsConstructor
 public class Player {
     private String nickname;
     private String role;

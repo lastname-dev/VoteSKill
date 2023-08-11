@@ -1,11 +1,14 @@
 package io.openvidu.basic.java.room.controller;
 
+import io.openvidu.basic.java.game.domain.GameInfo;
+import io.openvidu.basic.java.game.domain.Player;
 import io.openvidu.basic.java.jwt.JwtService;
 import io.openvidu.basic.java.room.dto.RoomEnterDto;
 import io.openvidu.basic.java.room.dto.RoomEnterResponseDto;
 import io.openvidu.basic.java.Room;
 import io.openvidu.basic.java.room.service.RoomService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -41,6 +44,7 @@ public class RoomController {
 
 	private final RoomService roomService;
 	private final JwtService jwtService;
+
 //	@PostConstruct
 //	public void init() {
 ////		this.openvidu = new OpenVidu(OPENVIDU_URL, OPENVIDU_SECRET);
@@ -128,5 +132,7 @@ public class RoomController {
 		RoomEnterResponseDto roomEnterResponseDto = new RoomEnterResponseDto(connection.getToken(),roomService.joinRoom(roomEnterDto));
 		return new ResponseEntity<>(roomEnterResponseDto, HttpStatus.OK);
 	}
+
+
 
 }

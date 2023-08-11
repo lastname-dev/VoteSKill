@@ -3,12 +3,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>io.openvidu</groupId>
-	<artifactId>openvidu-basic-java</artifactId>
+	<groupId>VoteSkill</groupId>
+	<artifactId>Business-Server</artifactId>
 	<version>2.28.0</version>
 	<packaging>jar</packaging>
 
-	<name>openvidu-basic-java</name>
+	<name>VoteSKill-Business-Server</name>
 	<url>https://github.com/OpenVidu/openvidu-tutorials/tree/master/openvidu-basic-java</url>
 
 	<parent>
