@@ -5,11 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.stereotype.Component;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Component
 /**
  * 서버에서 관리하기 위해 가지고 있을 정보
  * */
@@ -24,9 +26,8 @@ public class GameInfo {
      * 1,2: 첫째 날 / 3,4: 둘째 날 / 5,6: 셋째 날 .....
      * */
     int state ;
-
-    int time = 120; //2분
-    private List<String>[] messages;
+    int time;
+    private List<String> messages;
     int livePlayerNumber;
 
 }

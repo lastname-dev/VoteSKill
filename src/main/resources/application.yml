@@ -15,5 +15,5 @@ spring:
         max-idle: 10
         max-active: 10
         min-idle: 5
-    host: localhost
+    host: 15.164.100.235
     port: 6379

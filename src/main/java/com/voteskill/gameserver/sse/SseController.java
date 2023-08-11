@@ -49,22 +49,13 @@ public class SseController {
 //
 //    }
 
-    @PostMapping("/role/{roomId}/{userNickname}")
-    public ResponseEntity<Void> getRole(@PathVariable String roomId, @PathVariable String userNickname ) {
+
+//    @PostMapping("/roominfo/{roomId}")
+//    public ResponseEntity<Void> roomInfo(@PathVariable String roomId) {
 //        gameService.getGame(roomId);
-
-        sseEmitters.role(roomId,userNickname);
-//        sseEmitters.role();
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/roominfo/{roomId}")
-    public ResponseEntity<Void> roomInfo(@PathVariable String roomId) {
-//        gameService.getGame(roomId);
-
-        sseEmitters.roomInfo(roomId);
-        return ResponseEntity.ok().build();
-    }
+//        sseEmitters.roomInfo(roomId);
+//        return ResponseEntity.ok().build();
+//    }
 
 
 

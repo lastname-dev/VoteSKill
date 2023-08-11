@@ -3,6 +3,7 @@ package com.voteskill.gameserver.game.service;
 import com.voteskill.gameserver.game.domain.GameInfo;
 import com.voteskill.gameserver.game.domain.Player;
 import com.voteskill.gameserver.game.domain.Role;
+import com.voteskill.gameserver.game.domain.Room;
 import com.voteskill.gameserver.game.dto.GameInfoResponseDto;
 import com.voteskill.gameserver.game.dto.GameStartDto;
 import com.voteskill.gameserver.game.dto.SkillDto;
@@ -12,6 +13,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -24,14 +26,19 @@ import org.springframework.stereotype.Service;
 public class GameService {
 
   private final String gameKeyPrefix = "game:";
-  private final HashOperations<String, String, GameInfo> hashOperations;
-  private RedisTemplate redisTemplate;
 
   @Autowired
-  public GameService(RedisTemplate redisTemplate) {
-    this.redisTemplate = redisTemplate;
-    this.hashOperations = redisTemplate.opsForHash();
+  @Qualifier("redisTemplate")
+  private RedisTemplate redisTemplate;
+
+
+
+  public void test(GameInfo gameInfo){
+
+    redisTemplate.opsForHash().put(gameKeyPrefix,gameInfo.getGameRoomId(),gameInfo);
+
   }
+
 
   public void gameStart(String roomId) {
 
@@ -52,7 +59,7 @@ public class GameService {
 
   public void vote(String roomName) {
     GameInfo gameInfo = getGame(roomName);
-    List<String> messages = gameInfo.getMessages()[gameInfo.getState()];
+    List<String> messages = gameInfo.getMessages();
     int playerNumber = gameInfo.getLivePlayerNumber();
     List<Player> players = gameInfo.getPlayers();
     for (Player player : players) {
@@ -68,13 +75,14 @@ public class GameService {
 
     GameInfo gameInfo = getGame(roomName);
     List<Player> players = gameInfo.getPlayers();
-    List<String> messages = gameInfo.getMessages()[gameInfo.getState()];
+    List<String> messages = gameInfo.getMessages();
     String mafiaPick = "";
     String docterPick = "";
 
     for (Player player : players) {
       String role = player.getRole();
       String target = player.getPick();
+      if(target.equals("")) continue;
       switch (role) {
         case "ROLE_MAFIA":
           mafiaPick = player.getPick();
@@ -111,7 +119,7 @@ public class GameService {
     } else {
       messages.add(docterSkill(docterPick, roomName));
     }
-    hashOperations.put(gameKeyPrefix, roomName, gameInfo);
+    redisTemplate.opsForHash().put(gameKeyPrefix, roomName, gameInfo);
     return null;
   }
 
@@ -191,8 +199,16 @@ public class GameService {
   }
 
   public GameInfo getGame(String roomName) {
-    GameInfo game = hashOperations.get(gameKeyPrefix, roomName);
+    GameInfo game = (GameInfo) redisTemplate.opsForHash().get(gameKeyPrefix, roomName);
+    log.info("game : {}",game);
     return game;
+  }
+  public List<GameInfo> getGames(){
+    List<GameInfo> values = redisTemplate.opsForHash().values(gameKeyPrefix);
+    return values;
+  }
+  public void putGame(GameInfo gameInfo){
+    redisTemplate.opsForHash().put(gameKeyPrefix,gameInfo.getGameRoomId(),gameInfo);
   }
 
 

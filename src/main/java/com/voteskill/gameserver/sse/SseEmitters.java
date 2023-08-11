@@ -4,6 +4,7 @@ import com.voteskill.gameserver.game.domain.GameInfo;
 import com.voteskill.gameserver.game.domain.Player;
 import com.voteskill.gameserver.game.domain.Role;
 import com.voteskill.gameserver.game.dto.DistributeRolesDto;
+import com.voteskill.gameserver.game.dto.SseResponseDto;
 import com.voteskill.gameserver.game.service.GameService;
 import java.io.IOException;
 import java.util.HashMap;
@@ -31,9 +32,7 @@ public class SseEmitters {
     //방이름, 유저이름, 이미터 형식으로 저장
     SseEmitter add(String roomId, String userNickname, SseEmitter emitter) {
         this.emittersByRoomId.computeIfAbsent(roomId, key -> new HashMap<>()).put(userNickname, emitter);
-        log.info("new emitter added: {}", emitter);
-        log.info("roomId added: {}", roomId);
-        log.info("userNickname added: {}", userNickname);
+
         emitter.onCompletion(() -> {
             log.info("onCompletion callback");
             this.emittersByRoomId.remove(emitter);    // 만료되면 리스트에서 삭제
@@ -47,7 +46,7 @@ public class SseEmitters {
 
     //특정 클라이언트에게 역할 보내는 메서드
 //    @Scheduled(cron = "0/2 * * * * ?")
-    public void role(String roodId, String userNickname) {
+    public void role(String roodId) {
  //   public void role() {
 //        long count = counter.incrementAndGet();
 //        Map<String, SseEmitter> playersInTheRoom = emittersByRoomId.get(roodId);
@@ -69,42 +68,38 @@ public class SseEmitters {
 
        // String roodId = "testroom";
        // String userNickname = "11";
-
-        DistributeRolesDto d = new DistributeRolesDto();
-        d.setNickname("userNickname "+userNickname);
-        d.setRole(Role.DEVELOPER);
-        Object data = d;
-
+        GameInfo game = gameService.getGame(roodId);
+        List<Player> players = game.getPlayers();
         Map<String, SseEmitter> playersInTheRoom = emittersByRoomId.get(roodId);
-        SseEmitter emitter = playersInTheRoom.get(userNickname);
+        SseEmitter emitter;
+        for(Player player:players){
+            emitter = playersInTheRoom.get(player.getNickname());
             try {
                 emitter
                     .send(SseEmitter.event()
                         .name("role")
-                        .data(data));
+                        .data((Object) player.getRole()));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+        }
+
     }
 
     //모든 클라이언트에게 보내는 메서드
-    public void roomInfo(String roodId) {
+    public void roomInfo(String roomId, SseResponseDto sseResponseDto) {
 //        GameInfo gameInfo = gameService.getGame(roodId);
 
-        GameInfo info = new GameInfo();
-        info.setTime(1);
-        info.setLivePlayerNumber(2);
-        Object data = info;
 
-        Map<String, SseEmitter> playersInTheRoom = emittersByRoomId.get(roodId);
+        Map<String, SseEmitter> playersInTheRoom = emittersByRoomId.get(roomId);
 
         for (String key : playersInTheRoom.keySet()) {
             SseEmitter emitter = playersInTheRoom.get(key);
             try {
                 emitter
                     .send(SseEmitter.event()
-                        .name("roomInfo")
-                        .data(data));
+                        .name("room")
+                        .data((Object)sseResponseDto));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
