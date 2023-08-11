@@ -30,7 +30,7 @@ public class RoomService extends OpenVidu{
   private RedisTemplate roomRedisTemplate;
   private SetOperations<String,Room> setOperations;
 //  private HashOperations<String,String,Room> hashOperations;
-  private final String roomKeyPrefix = "room:";
+  private final String roomKeyPrefix = "room";
 //  private final ValueOperations<String,Room> stringRoomValueOperations;
 
   @Autowired
@@ -79,7 +79,8 @@ public class RoomService extends OpenVidu{
       throw new Exception();
     }
     log.info("입장 하려는 방:{} , 입력한 비밀번호:{}",room.getPassword(),roomEnterDto.getPassword());
-    if(room.getPassword()==null || room.getPassword().equals(roomEnterDto.getPassword())){
+    if(room.getPassword().equals("") || room.getPassword().equals(roomEnterDto.getPassword())){
+      log.info("인원추가 :{}",roomEnterDto.getNickname() );
       room.getPeople().add(roomEnterDto.getNickname());
     }else{
       throw new AuthenticationException("비밀번호가 틀렸습니다");
@@ -88,18 +89,24 @@ public class RoomService extends OpenVidu{
     return room;
   }
   public List<Room> getRooms(){
-    List<Room> rooms = roomRedisTemplate.opsForHash().values("room");
+    List<Room> rooms = roomRedisTemplate.opsForHash().values(roomKeyPrefix);
     return rooms;
   }
   public Room getRoom(String roomName){
 //    Room room = (Room) redisTemplate.opsForValue().get(roomKeyPrefix+roomName);
-    Room room = (Room) roomRedisTemplate.opsForHash().get("room", roomName);
+    Room room = (Room) roomRedisTemplate.opsForHash().get(roomKeyPrefix, roomName);
     log.info("getRoom : {}",room);
     return room;
   }
   public void exitRoom(String nickname,String roomName) {
-      List<String> people = getRoom(roomName).getPeople();
-
+    Room room = getRoom(roomName);
+    List<String> people = room.getPeople();
+      for(String person : people){
+        if(person.equals(nickname)){
+          people.remove(person);
+        }
+      }
+    roomRedisTemplate.opsForHash().put(roomKeyPrefix,roomName,room);
   }
 
 
