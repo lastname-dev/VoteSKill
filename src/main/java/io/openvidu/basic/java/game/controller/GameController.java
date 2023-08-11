@@ -31,7 +31,7 @@ public class GameController {
 
     private final JwtService jwtService;
     private final GameService gameService;
-    @PostMapping("/rooms/{roodId}/start")
+    @PostMapping("/rooms/{roomId}/start")
     public void start(@PathVariable String roomId){
         gameService.setting(roomId);
     }
@@ -49,23 +49,23 @@ public class GameController {
         gameService.vote(voteDto);
     }
     @PostMapping("/dummy")
-    public void dummy() {
-        List<Player> players = new ArrayList<>();
+        public void dummy() {
+            List<Player> players = new ArrayList<>();
 
-        players.add(new Player("user1" , "ROLE_MAFIA", "PERSON", 0, true, false));
-        players.add(new Player("user2" , "ROLE_DOCTOR", "PERSON", 0, true, false));
-        players.add(new Player("user3" , "ROLE_GANGSTER", "PERSON", 0, true, false));
-        players.add(new Player("user4" , "ROLE_POLITICIAN", "PERSON", 0, true, false));
-        players.add(new Player("user5" , "ROLE_PRIEST", "PERSON", 0, true, false));
-        players.add(new Player("user6" , "ROLE_POLICE", "PERSON", 0, true, false));
+            players.add(new Player("user1" , "ROLE_MAFIA", "PERSON", 0, true, false));
+            players.add(new Player("user2" , "ROLE_DOCTOR", "PERSON", 0, true, false));
+            players.add(new Player("user3" , "ROLE_GANGSTER", "PERSON", 0, true, false));
+            players.add(new Player("user4" , "ROLE_POLITICIAN", "PERSON", 0, true, false));
+            players.add(new Player("user5" , "ROLE_PRIEST", "PERSON", 0, true, false));
+            players.add(new Player("user6" , "ROLE_POLICE", "PERSON", 0, true, false));
 
-        GameInfo gameInfo = new GameInfo("testroom2", players, 1, 0, new ArrayList<>(), 6);
-        gameService.test(gameInfo);
+            GameInfo gameInfo = new GameInfo("testroom2", players, 1, 0, new ArrayList<>(), 6);
+            gameService.test(gameInfo);
         log.info("더미 데이터 삽입 완료");
     }
     @GetMapping("/{gameId}")
     public GameInfo test(@PathVariable String gameId){
-        log.info("game : {}",gameService.getGame(gameId));
+        log.info("game : {}"    ,gameService.getGame(gameId));
         return gameService.getGame(gameId);
     }
 }
