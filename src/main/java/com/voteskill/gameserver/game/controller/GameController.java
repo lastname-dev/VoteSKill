@@ -32,7 +32,6 @@ public class GameController {
 
   private final GameService gameService;
   private final VoteService voteService;
-  private final RedisService redisService;
   private final SseEmitters sseEmitters;
   private final GameSchedulerService gameSchedulerService;
 

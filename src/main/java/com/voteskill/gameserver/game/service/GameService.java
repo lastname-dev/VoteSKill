@@ -13,6 +13,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -25,18 +26,16 @@ import org.springframework.stereotype.Service;
 public class GameService {
 
   private final String gameKeyPrefix = "game:";
-  private final HashOperations<String, String, GameInfo> hashOperations;
-  private RedisTemplate redisTemplate;
 
   @Autowired
-  public GameService(RedisTemplate redisTemplate) {
-    this.redisTemplate = redisTemplate;
-    this.hashOperations = redisTemplate.opsForHash();
-  }
+  @Qualifier("redisTemplate")
+  private RedisTemplate redisTemplate;
+
+
 
   public void test(GameInfo gameInfo){
 
-    hashOperations.put(gameKeyPrefix,gameInfo.getGameRoomId(),gameInfo);
+    redisTemplate.opsForHash().put(gameKeyPrefix,gameInfo.getGameRoomId(),gameInfo);
 
   }
 
@@ -120,7 +119,7 @@ public class GameService {
     } else {
       messages.add(docterSkill(docterPick, roomName));
     }
-    hashOperations.put(gameKeyPrefix, roomName, gameInfo);
+    redisTemplate.opsForHash().put(gameKeyPrefix, roomName, gameInfo);
     return null;
   }
 
@@ -200,16 +199,16 @@ public class GameService {
   }
 
   public GameInfo getGame(String roomName) {
-    GameInfo game = hashOperations.get(gameKeyPrefix, roomName);
+    GameInfo game = (GameInfo) redisTemplate.opsForHash().get(gameKeyPrefix, roomName);
     log.info("game : {}",game);
     return game;
   }
   public List<GameInfo> getGames(){
-    List<GameInfo> values = hashOperations.values(gameKeyPrefix);
+    List<GameInfo> values = redisTemplate.opsForHash().values(gameKeyPrefix);
     return values;
   }
   public void putGame(GameInfo gameInfo){
-    hashOperations.put(gameKeyPrefix,gameInfo.getGameRoomId(),gameInfo);
+    redisTemplate.opsForHash().put(gameKeyPrefix,gameInfo.getGameRoomId(),gameInfo);
   }
 
 
