@@ -16,6 +16,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,6 +52,8 @@ public class GameService {
         GameInfo gameInfo = new GameInfo(roomName, players, 1,0,new ArrayList<>(),6);
         redisTemplate.opsForHash().put(gameKeyPrefix, roomName, gameInfo);
     }
+
+    @Transactional
     public void vote(VoteDto voteDto){
         GameInfo gameInfo = getGame(voteDto.getRoomName());
         List<Player> players = gameInfo.getPlayers();
@@ -82,6 +85,13 @@ public class GameService {
         String roomName = skillDto.getRoomId();
 
         GameInfo gameInfo = getGame(roomName);
+
+        String role = checkRole(gameInfo, caster);
+
+        if(role.equals("ROLE_POLICE")){
+            // POLICE 직업의 스킬 처리 로직
+            return policeSkill(caster, target, roomName);}
+
         List<Player> players = gameInfo.getPlayers();
         for(Player player : players){
             if(player.getNickname().equals(caster))
@@ -89,11 +99,7 @@ public class GameService {
         }
         redisTemplate.opsForHash().put(gameKeyPrefix,roomName,gameInfo);
 
-        String role = checkRole(gameInfo, caster);
 
-        if(role.equals("ROLE_POLICE")){
-        // POLICE 직업의 스킬 처리 로직
-        return policeSkill(caster, target, roomName);}
 
         return null;
     }
@@ -118,6 +124,7 @@ public class GameService {
         List<String> selectedRoles = new ArrayList<>(essentialRoles);
         selectedRoles.add(otherRoles.get(0));
         selectedRoles.add(otherRoles.get(1));
+        selectedRoles.add(otherRoles.get(2));
 
         // 역할 리스트에서 역할을 랜덤으로 선택하여 Player 객체를 생성하고 반환
         Random random = new Random();
@@ -134,8 +141,6 @@ public class GameService {
 
         return players;
     }
-
-    // MAFIA 직업의 스킬 처리 로직
 
     private ResponseEntity<SkillResultDto> policeSkill(String caster, String target, String roomName)
         throws Exception {

@@ -36,7 +36,6 @@ public class Room implements Serializable {
     this.password = password;
     this.admitNumber = admitNumber;
     this.host=host;
-    this.people.add(host);
   }
 //  public void addPerson(Person person){
 //    people.add(person);

@@ -11,14 +11,13 @@ import java.util.List;
 @RequiredArgsConstructor
 @Getter
 public enum EssentialRole {
-    MAFIA("ROLE_MAFIA"), SPY("ROLE_SPY"), DOCTOR("ROLE_DOCTOR"), POLICE("ROLE_POLICE");
+    MAFIA("ROLE_MAFIA"),  DOCTOR("ROLE_DOCTOR"), POLICE("ROLE_POLICE");
 
     private final String roleName;
 
     public static List<String> getEssentialRoles(){
         return Arrays.asList(
                 MAFIA.getRoleName(),
-                SPY.getRoleName(),
                 DOCTOR.getRoleName(),
                 POLICE.getRoleName()
         );

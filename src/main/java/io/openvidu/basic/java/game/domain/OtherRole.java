@@ -10,7 +10,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public enum OtherRole {
     REPORTER("ROLE_REPORTER"), SOLDIER("ROLE_SOLDIER"), POLITICIAN("ROLE_POLITICIAN"),
-    DEVELOPER("ROLE_DEVELOPER"), GANGSTER("ROLE_GANGSTER"), PRIEST("ROLE_PRIEST");
+    PRIEST("ROLE_PRIEST");
 
     private final String roleName;
 
@@ -19,8 +19,6 @@ public enum OtherRole {
                 REPORTER.getRoleName(),
                 SOLDIER.getRoleName(),
                 POLITICIAN.getRoleName(),
-                DEVELOPER.getRoleName(),
-                GANGSTER.getRoleName(),
                 PRIEST.getRoleName()
         );
     }
