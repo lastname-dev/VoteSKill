@@ -33,7 +33,7 @@ public class SseController {
     @GetMapping(value = "/enter/{roomId}/{userNickname}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ResponseEntity<SseEmitter> connectRoom(@PathVariable String roomId, @PathVariable String userNickname) {
         SseEmitter emitter = new SseEmitter(DEFAULT_TIMEOUT );
-        sseEmitters.add(roomId, userNickname, emitter);
+        sseEmitters.add(roomId,userNickname,emitter);
         try {
             emitter.send(SseEmitter.event()
                 .name("connect")
@@ -43,6 +43,7 @@ public class SseController {
         }
         return ResponseEntity.ok(emitter);
     }
+
 
 //    @PostMapping("/start/{roomId}")
 //    public ResponseEntity<?> start(@PathVariable String roomId){

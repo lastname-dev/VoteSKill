@@ -1,4 +1,4 @@
-package com.voteskill.gameserver.game.config;
+package com.voteskill.gameserver.config;
 
 import com.voteskill.gameserver.game.domain.GameInfo;
 import org.springframework.beans.factory.annotation.Value;

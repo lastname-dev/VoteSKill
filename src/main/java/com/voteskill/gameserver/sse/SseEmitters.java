@@ -2,9 +2,9 @@ package com.voteskill.gameserver.sse;
 
 import com.voteskill.gameserver.game.domain.GameInfo;
 import com.voteskill.gameserver.game.domain.Player;
-import com.voteskill.gameserver.game.domain.Role;
-import com.voteskill.gameserver.game.dto.DistributeRolesDto;
 import com.voteskill.gameserver.game.dto.SseResponseDto;
+import com.voteskill.gameserver.game.dto.SseRoleDto;
+import com.voteskill.gameserver.game.dto.SseVoteDto;
 import com.voteskill.gameserver.game.service.GameService;
 import java.io.IOException;
 import java.util.HashMap;
@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -30,7 +29,7 @@ public class SseEmitters {
     }
 
     //방이름, 유저이름, 이미터 형식으로 저장
-    SseEmitter add(String roomId, String userNickname, SseEmitter emitter) {
+    public SseEmitter add(String roomId, String userNickname, SseEmitter emitter) {
         this.emittersByRoomId.computeIfAbsent(roomId, key -> new HashMap<>()).put(userNickname, emitter);
 
         emitter.onCompletion(() -> {
@@ -47,38 +46,18 @@ public class SseEmitters {
     //특정 클라이언트에게 역할 보내는 메서드
 //    @Scheduled(cron = "0/2 * * * * ?")
     public void role(String roodId) {
- //   public void role() {
-//        long count = counter.incrementAndGet();
-//        Map<String, SseEmitter> playersInTheRoom = emittersByRoomId.get(roodId);
-//        GameInfo gameInfo = gameService.getGame(roodId);
-//        List<Player> players = gameInfo.getPlayers();
-//        for (Player player : players) {
-//            if (player.getNickname().equals(userNickname)) {
-//                SseEmitter emitter = playersInTheRoom.get(userNickname);
-//                try {
-//                    emitter
-//                        .send(SseEmitter.event()
-//                            .name("role")
-//                            .data(gameInfo));
-//                } catch (IOException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
-//        }
-
-       // String roodId = "testroom";
-       // String userNickname = "11";
         GameInfo game = gameService.getGame(roodId);
         List<Player> players = game.getPlayers();
         Map<String, SseEmitter> playersInTheRoom = emittersByRoomId.get(roodId);
         SseEmitter emitter;
         for(Player player:players){
+            System.out.println("닉네임:" + player.getNickname());
             emitter = playersInTheRoom.get(player.getNickname());
             try {
                 emitter
                     .send(SseEmitter.event()
                         .name("role")
-                        .data((Object) player.getRole()));
+                        .data((Object) new SseRoleDto(player.getRole(), 120)));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -100,6 +79,21 @@ public class SseEmitters {
                     .send(SseEmitter.event()
                         .name("room")
                         .data((Object)sseResponseDto));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+    public void sendVoteTime(String roomId){
+        Map<String, SseEmitter> playersInTheRoom = emittersByRoomId.get(roomId);
+
+        for (String key : playersInTheRoom.keySet()) {
+            SseEmitter emitter = playersInTheRoom.get(key);
+            try {
+                emitter
+                        .send(SseEmitter.event()
+                                .name("vote")
+                                .data((Object)new SseVoteDto(true,15)));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -165,3 +159,20 @@ public class SseEmitters {
 
 
 }
+
+//const eventSource = new EventSource(
+//      `/enter/${roomName}/${userNickname}`,
+//      {
+//        withCredentials: true, // 필요에 따라 설정
+//      }
+//    );
+//
+//    eventSource.onopen = (event) => {
+//      console.log("SSE connection opened:", event);
+//    };
+//
+//    eventSource.onmessage = (event) => {
+//      const data = JSON.parse(event.data);
+//      console.log("SSE message received:", data);
+//      // SSE로 받은 데이터를 원하는 방식으로 처리
+//    };

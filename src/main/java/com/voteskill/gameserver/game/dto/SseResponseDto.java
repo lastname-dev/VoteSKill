@@ -9,5 +9,7 @@ import lombok.AllArgsConstructor;
 public class SseResponseDto {
   private List<String> death;
   private List<String> messages;
+  private int timer;
+  private String type;
 }
 
