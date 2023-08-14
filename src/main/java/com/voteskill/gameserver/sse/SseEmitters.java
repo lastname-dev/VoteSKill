@@ -68,8 +68,7 @@ public class SseEmitters {
     //모든 클라이언트에게 보내는 메서드
     public void roomInfo(String roomId, SseResponseDto sseResponseDto) {
 //        GameInfo gameInfo = gameService.getGame(roodId);
-
-
+        log.info("보내려는 데이터 : {}",sseResponseDto.getType());
         Map<String, SseEmitter> playersInTheRoom = emittersByRoomId.get(roomId);
 
         for (String key : playersInTheRoom.keySet()) {

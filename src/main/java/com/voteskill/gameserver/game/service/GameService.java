@@ -65,7 +65,7 @@ public class GameService {
         List<Player> players = gameInfo.getPlayers();
         for (Player player : players) {
             if (player.getVoteCount() > (playerNumber + 1) / 2) {
-                if (player.getRole().equals("ROLE_POLITICIAN")) {
+                if (player.getRole().equals("POLITICIAN")) {
                     messages.add(politicianSkill(player.getNickname(), roomName));
                 }
             }
@@ -85,23 +85,23 @@ public class GameService {
             log.info("{} : {}({})가 {}에게 능력을 사용합니다", roomName, player.getNickname(), role, target);
             if (target.equals("")) continue;
             switch (role) {
-                case "ROLE_MAFIA":
+                case "MAFIA":
                     mafiaPick = player.getPick();
                     break;
-                case "ROLE_SPY":
+                case "SPY":
                     spySkill(target, roomName);
                     break;
-                case "ROLE_DOCTOR":
+                case "DOCTOR":
                     docterPick = player.getPick();
                     break;
-                case "ROLE_REPORTER":
+                case "REPORTER":
                     if (player.getUseSkill()) {
                         break;
                     }
                     player.setUseSkill(true);
                     messages.add(reporterSkill(target, roomName));
                     break;
-                case "ROLE_PRIEST":
+                case "PRIEST":
                     if (player.getUseSkill()) {
                         break;
                     }
@@ -145,7 +145,7 @@ public class GameService {
         List<Player> players = gameInfo.getPlayers();
         for (Player player : players) {
             if (player.getNickname().equals(target)) {
-                if (player.getRole().equals("ROLE_SOLDIER") && !player.getUseSkill()) {
+                if (player.getRole().equals("SOLDIER") && !player.getUseSkill()) {
                     player.setUseSkill(true);
                     return target + " 이 군인이었습니다.";
                 }

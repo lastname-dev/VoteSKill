@@ -48,7 +48,7 @@ public class GameSchedulerService {
     public void startSchedulingForRoom(String roomName) {
         log.info("room : {}", roomName);
         if (!scheduledFutures.containsKey(roomName)) {
-            ScheduledFuture<?> scheduledFuture = taskScheduler.schedule(() -> sendVoteTime(roomName), Instant.now().plusSeconds(120));
+            ScheduledFuture<?> scheduledFuture = taskScheduler.schedule(() -> sendVoteTime(roomName), Instant.now().plusSeconds(15));
             scheduledFutures.put(roomName, scheduledFuture);
         }
     }
@@ -92,7 +92,7 @@ public class GameSchedulerService {
         gameService.skill(roomName);
         SseResponseDto skillDto = toSkillDto(roomName);
         sseEmitters.roomInfo(roomName, skillDto);
-      ScheduledFuture<?> scheduledFuture = taskScheduler.schedule(() -> startSchedulingForRoom(roomName), Instant.now().plusSeconds(120));
+      ScheduledFuture<?> scheduledFuture = taskScheduler.schedule(() -> startSchedulingForRoom(roomName), Instant.now().plusSeconds(15));
       scheduledFutures.put(roomName, scheduledFuture);
     }
 
@@ -118,11 +118,12 @@ public class GameSchedulerService {
         List<String> death = new ArrayList<>();
         List<String> message = new ArrayList<>();
         for (Player player : players) {
+            log.info("투표 : {} 가 {} 표를 받았습니다.", player.getNickname(),player.getVoteCount());
             if (!player.getAlive()) {
                 death.add(player.getNickname());
             }
             if (player.getVoteCount() > (gameInfo.getLivePlayerNumber() / 2)) {
-                if (player.getRole().equals("ROLE_POLITICIAN")) {
+                if (player.getRole().equals("POLITICIAN")) {
                     message.add(player.getNickname() + "님은 정치인입니다");
                     break;
                 }
