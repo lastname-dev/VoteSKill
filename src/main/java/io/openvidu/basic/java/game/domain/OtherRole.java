@@ -9,8 +9,8 @@ import java.util.List;
 @Getter
 @RequiredArgsConstructor
 public enum OtherRole {
-    REPORTER("ROLE_REPORTER"), SOLDIER("ROLE_SOLDIER"), POLITICIAN("ROLE_POLITICIAN"),
-    PRIEST("ROLE_PRIEST");
+    REPORTER("REPORTER"), SOLDIER("SOLDIER"), POLITICIAN("POLITICIAN"),
+    PRIEST("PRIEST");
 
     private final String roleName;
 

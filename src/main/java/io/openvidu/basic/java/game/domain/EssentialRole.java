@@ -11,7 +11,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Getter
 public enum EssentialRole {
-    MAFIA("ROLE_MAFIA"),  DOCTOR("ROLE_DOCTOR"), POLICE("ROLE_POLICE");
+    MAFIA("MAFIA"),  DOCTOR("DOCTOR"), POLICE("POLICE");
 
     private final String roleName;
 

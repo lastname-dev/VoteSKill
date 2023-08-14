@@ -88,7 +88,7 @@ public class GameService {
 
         String role = checkRole(gameInfo, caster);
 
-        if(role.equals("ROLE_POLICE")){
+        if(role.equals("POLICE")){
             // POLICE 직업의 스킬 처리 로직
             return policeSkill(caster, target, roomName);}
 
@@ -138,6 +138,9 @@ public class GameService {
 
             players.add(player);
         }
+        for(Player player: players){
+            log.info("player {} 의 직업은 {} 입니다.",player.getNickname(),player.getRole());
+        }
 
         return players;
     }
@@ -148,18 +151,18 @@ public class GameService {
         GameInfo gameInfo = getGame(roomName);
 
 
-        if(!checkRole(gameInfo,caster).equals("ROLE_POLICE")) {
+        if(!checkRole(gameInfo,caster).equals("POLICE")) {
             throw new Exception();
         }
         List<Player> players = gameInfo.getPlayers();
         for(Player player : players){
             if(player.getNickname().equals(target)){
-                if(player.getRole().equals("ROLE_MAFIA"))
-                    return new ResponseEntity<>(new SkillResultDto(target,true),HttpStatus.ACCEPTED);
-                return new ResponseEntity<>(new SkillResultDto(target,false),HttpStatus.ACCEPTED);
+                if(player.getRole().equals("MAFIA"))
+                    return new ResponseEntity<>(new SkillResultDto(target,true,target+"은 마피아입니다."),HttpStatus.ACCEPTED);
+                return new ResponseEntity<>(new SkillResultDto(target,false,target+"은 마피아가 아닙니다."),HttpStatus.ACCEPTED);
             }
         }
-        return new ResponseEntity<>(new SkillResultDto(target,false),HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new SkillResultDto(target,false,target+"은 마피아가 아닙니다."),HttpStatus.BAD_REQUEST);
     }
 
     private void reporterSkill(String caster, String target, String roomName) {
