@@ -1,7 +1,7 @@
 package io.openvidu.basic.java.room.service;
 
 import io.openvidu.basic.java.room.dto.RoomEnterDto;
-import io.openvidu.basic.java.Room;
+import io.openvidu.basic.java.room.domain.Room;
 import io.openvidu.java.client.OpenVidu;
 import io.openvidu.java.client.OpenViduHttpException;
 import io.openvidu.java.client.OpenViduJavaClientException;

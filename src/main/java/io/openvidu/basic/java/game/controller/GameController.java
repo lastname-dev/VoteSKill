@@ -1,17 +1,10 @@
 package io.openvidu.basic.java.game.controller;
 
-import io.openvidu.basic.java.Room;
-import io.openvidu.basic.java.game.domain.GameInfo;
-import io.openvidu.basic.java.game.domain.Player;
 import io.openvidu.basic.java.game.dto.SkillDto;
 import io.openvidu.basic.java.game.dto.SkillResultDto;
 import io.openvidu.basic.java.game.dto.VoteDto;
 import io.openvidu.basic.java.game.service.GameService;
 import io.openvidu.basic.java.jwt.JwtService;
-import io.openvidu.basic.java.room.service.RoomService;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
@@ -21,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;

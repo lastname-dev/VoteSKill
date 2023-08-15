@@ -1,4 +1,4 @@
-package io.openvidu.basic.java;
+package io.openvidu.basic.java.room.domain;
 
 
 import lombok.AllArgsConstructor;
