@@ -54,13 +54,19 @@ public class GameService {
     }
 
     @Transactional
-    public void vote(VoteDto voteDto){
+    public void vote(VoteDto voteDto) throws Exception {
         GameInfo gameInfo = getGame(voteDto.getRoomName());
         List<Player> players = gameInfo.getPlayers();
         Boolean politician = false;
         for(Player player: players){
-            if(player.getNickname().equals(voteDto.getCaster())&&player.getRole().equals("ROLE_POLITICIAN")){
+            if(player.getNickname().equals(voteDto.getCaster()) && player.getUseVote()){
+                throw new Exception();
+            }
+            else if(player.getNickname().equals(voteDto.getCaster())&&player.getRole().equals("POLITICIAN")){
                 politician= true;
+            }
+            if(player.getNickname().equals(voteDto.getCaster())){
+                player.setUseVote(true);
             }
         }
         for(Player player : players){
@@ -68,6 +74,9 @@ public class GameService {
                 player.incrementVoteCount();
                 if(politician)
                     player.incrementVoteCount();
+            }
+            if(player.getRole().equals("POLICE")){
+                player.setUseSkill(false);
             }
         }
         redisTemplate.opsForHash().put(gameKeyPrefix, voteDto.getRoomName(), gameInfo);
@@ -89,13 +98,17 @@ public class GameService {
         String role = checkRole(gameInfo, caster);
 
         if(role.equals("POLICE")){
-            // POLICE 직업의 스킬 처리 로직
-            return policeSkill(caster, target, roomName);}
+            return policeSkill(caster, target, roomName,gameInfo);
+        }
 
         List<Player> players = gameInfo.getPlayers();
         for(Player player : players){
-            if(player.getNickname().equals(caster))
+            if(player.getNickname().equals(caster)) {
+                if(!player.getAlive()){
+                    return null;
+                }
                 player.setPick(target);
+            }
         }
         redisTemplate.opsForHash().put(gameKeyPrefix,roomName,gameInfo);
 
@@ -134,7 +147,7 @@ public class GameService {
             String randomRole = selectedRoles.remove(random.nextInt(selectedRoles.size()));
 
             // Player 객체 생성 및 리스트에 추가
-            Player player = new Player(nickname, randomRole,"",0, true, false);
+            Player player = new Player(nickname, randomRole,"",0, true, false,false);
 
             players.add(player);
         }
@@ -145,18 +158,20 @@ public class GameService {
         return players;
     }
 
-    private ResponseEntity<SkillResultDto> policeSkill(String caster, String target, String roomName)
+    private ResponseEntity<SkillResultDto> policeSkill(String caster, String target, String roomName,GameInfo gameInfo)
         throws Exception {
         // 스킬 처리 로직 구현
-        GameInfo gameInfo = getGame(roomName);
-
 
         if(!checkRole(gameInfo,caster).equals("POLICE")) {
             throw new Exception();
         }
         List<Player> players = gameInfo.getPlayers();
         for(Player player : players){
+            if(player.getRole().equals("POLICE")&&player.getUseSkill()){
+                return new ResponseEntity<>(new SkillResultDto(target,false,"능력은 한번만 사용 가능합니다."),HttpStatus.ACCEPTED);
+            }
             if(player.getNickname().equals(target)){
+                player.setUseSkill(true);
                 if(player.getRole().equals("MAFIA"))
                     return new ResponseEntity<>(new SkillResultDto(target,true,target+"은 마피아입니다."),HttpStatus.ACCEPTED);
                 return new ResponseEntity<>(new SkillResultDto(target,false,target+"은 마피아가 아닙니다."),HttpStatus.ACCEPTED);

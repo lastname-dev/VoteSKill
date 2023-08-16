@@ -52,7 +52,8 @@ public class GameController {
         return gameService.skill(skillDto);
     }
     @PostMapping("/rooms/{roomId}/vote/{target}")
-    public void vote(@PathVariable String roomId,@PathVariable String target,HttpServletRequest request){
+    public void vote(@PathVariable String roomId,@PathVariable String target,HttpServletRequest request)
+        throws Exception {
         String nickName = jwtService.getNickName(request);
         VoteDto voteDto = new VoteDto(roomId,nickName,target);
         gameService.vote(voteDto);
