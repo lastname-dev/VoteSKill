@@ -43,8 +43,6 @@ public class SseEmitters {
         return emitter;
     }
 
-    //특정 클라이언트에게 역할 보내는 메서드
-//    @Scheduled(cron = "0/2 * * * * ?")
     public void role(String roodId) {
         GameInfo game = gameService.getGame(roodId);
         List<Player> players = game.getPlayers();
@@ -83,6 +81,9 @@ public class SseEmitters {
             }
         }
     }
+    public void gameOver(String roomId,SseResponseDto sseResponseDto){
+
+    }
     public void sendVoteTime(String roomId){
         Map<String, SseEmitter> playersInTheRoom = emittersByRoomId.get(roomId);
 
@@ -99,79 +100,4 @@ public class SseEmitters {
         }
     }
 
-//        emittersByRoomId.forEach(emitter -> {
-//            try {
-//                emitter
-//                    .send(SseEmitter.event()
-//                    .name("role")
-//                    .data(data));
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
-//        });
-//    }
-
-//    /**
-//     * 콜백은 SseEmitter를 관리하는 다른 스레드에서 실행
-//     * 따라서 thread-safe한 자료구조인 CopyOnWriteArrayList를 사용
-//     * ConcurrnetModificationException 방지를 위함
-//     * */
-//    private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
-//
-//
-//    /**
-//     * kill 이벤트 발생
-//     * 특정 플레이어가 죽음
-//     * */
-//    public void kill() {
-//        String deadPlayerNickname = "죽은 플레이어의 닉네임";
-//        emitters.forEach(emitter -> {
-//            try {
-//                emitter.send(SseEmitter.event()
-//                    .name("kill")
-//                    .data(deadPlayerNickname));
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
-//        });
-//    }
-//
-//    /**
-//     * reveal 이벤트 발생
-//     * 특정 플레이어의 직업을 밝힘
-//     * */
-//    public void reveal() {
-//        String playerNickname = "특정 플레이어의 닉네임";
-//        Role role = Role.DOCTOR; // 의사였다고 가정
-//        emitters.forEach(emitter -> {
-//            try {
-//                emitter.send(SseEmitter.event()
-//                    .name("reveal")
-//                    .data(playerNickname + role));
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
-//        });
-//    }
-
-
-
-
 }
-
-//const eventSource = new EventSource(
-//      `/enter/${roomName}/${userNickname}`,
-//      {
-//        withCredentials: true, // 필요에 따라 설정
-//      }
-//    );
-//
-//    eventSource.onopen = (event) => {
-//      console.log("SSE connection opened:", event);
-//    };
-//
-//    eventSource.onmessage = (event) => {
-//      const data = JSON.parse(event.data);
-//      console.log("SSE message received:", data);
-//      // SSE로 받은 데이터를 원하는 방식으로 처리
-//    };
