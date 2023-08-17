@@ -1,6 +1,6 @@
 package io.openvidu.basic.java.room.dto;
 
-import io.openvidu.basic.java.Room;
+import io.openvidu.basic.java.room.domain.Room;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

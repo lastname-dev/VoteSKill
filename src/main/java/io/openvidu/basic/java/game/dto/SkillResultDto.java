@@ -7,5 +7,6 @@ import lombok.Getter;
 @Getter
 public class SkillResultDto {
   private String target; // nickname
-  private boolean isMafia; // true false;
+  private boolean isMafia;
+  private String message;
 }

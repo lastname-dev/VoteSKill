@@ -1,7 +1,7 @@
 package io.openvidu.basic.java.room.service;
 
 import io.openvidu.basic.java.room.dto.RoomEnterDto;
-import io.openvidu.basic.java.Room;
+import io.openvidu.basic.java.room.domain.Room;
 import io.openvidu.java.client.OpenVidu;
 import io.openvidu.java.client.OpenViduHttpException;
 import io.openvidu.java.client.OpenViduJavaClientException;
@@ -30,7 +30,7 @@ public class RoomService extends OpenVidu{
   private RedisTemplate roomRedisTemplate;
   private SetOperations<String,Room> setOperations;
 //  private HashOperations<String,String,Room> hashOperations;
-  private final String roomKeyPrefix = "room:";
+  private final String roomKeyPrefix = "room";
 //  private final ValueOperations<String,Room> stringRoomValueOperations;
 
   @Autowired
@@ -79,7 +79,8 @@ public class RoomService extends OpenVidu{
       throw new Exception();
     }
     log.info("입장 하려는 방:{} , 입력한 비밀번호:{}",room.getPassword(),roomEnterDto.getPassword());
-    if(room.getPassword()==null || room.getPassword().equals(roomEnterDto.getPassword())){
+    if(room.getPassword().equals("") || room.getPassword().equals(roomEnterDto.getPassword())){
+      log.info("인원추가 :{}",roomEnterDto.getNickname() );
       room.getPeople().add(roomEnterDto.getNickname());
     }else{
       throw new AuthenticationException("비밀번호가 틀렸습니다");
@@ -88,18 +89,27 @@ public class RoomService extends OpenVidu{
     return room;
   }
   public List<Room> getRooms(){
-    List<Room> rooms = roomRedisTemplate.opsForHash().values("room");
+    List<Room> rooms = roomRedisTemplate.opsForHash().values(roomKeyPrefix);
     return rooms;
   }
   public Room getRoom(String roomName){
 //    Room room = (Room) redisTemplate.opsForValue().get(roomKeyPrefix+roomName);
-    Room room = (Room) roomRedisTemplate.opsForHash().get("room", roomName);
+    Room room = (Room) roomRedisTemplate.opsForHash().get(roomKeyPrefix, roomName);
     log.info("getRoom : {}",room);
     return room;
   }
   public void exitRoom(String nickname,String roomName) {
-      List<String> people = getRoom(roomName).getPeople();
-
+    Room room = getRoom(roomName);
+    List<String> people = room.getPeople();
+    for(String person : people){
+      log.info("{} 에 있는 사람 : {}",roomName,person);
+      if(person.equals(nickname)){
+        people.remove(person);
+      }
+      if(people.size()==0)
+        break;
+    }
+    roomRedisTemplate.opsForHash().put(roomKeyPrefix,roomName,room);
   }
 
 

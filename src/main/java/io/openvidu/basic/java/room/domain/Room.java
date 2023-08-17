@@ -1,4 +1,4 @@
-package io.openvidu.basic.java;
+package io.openvidu.basic.java.room.domain;
 
 
 import lombok.AllArgsConstructor;
@@ -36,7 +36,10 @@ public class Room implements Serializable {
     this.password = password;
     this.admitNumber = admitNumber;
     this.host=host;
-    this.people.add(host);
+  }
+  public Room(String name,List<String> people){
+    this.name=name;
+    this.people=people;
   }
 //  public void addPerson(Person person){
 //    people.add(person);
