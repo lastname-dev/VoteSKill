@@ -55,7 +55,9 @@ public class GameService {
 
     @Transactional
     public void vote(VoteDto voteDto) throws Exception {
+        log.info("voteDto.getRoomName : {}",voteDto.getRoomName());
         GameInfo gameInfo = getGame(voteDto.getRoomName());
+        log.info("gameInfo : {}",gameInfo);
         List<Player> players = gameInfo.getPlayers();
         Boolean politician = false;
         for(Player player: players){
