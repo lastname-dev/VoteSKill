@@ -55,7 +55,7 @@ public class SseEmitters {
                 emitter
                     .send(SseEmitter.event()
                         .name("role")
-                        .data((Object) new SseRoleDto(player.getRole(), 120)));
+                        .data((Object) new SseRoleDto(player.getRole(), 30)));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

@@ -125,7 +125,7 @@ public class GameService {
             }
             player.setPick("");
         }
-        SseResponseDto sseResponseDto = new SseResponseDto(death, message, 120,"skill");
+        SseResponseDto sseResponseDto = new SseResponseDto(death, message, 30,"skill");
         redisTemplate.opsForHash().put(gameKeyPrefix, roomName, gameInfo);
         return sseResponseDto;
     }

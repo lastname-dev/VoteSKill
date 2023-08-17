@@ -37,7 +37,7 @@ public class GameSchedulerService {
     public void startSchedulingForRoom(String roomName) {
         log.info("room : {}", roomName);
 
-            ScheduledFuture<?> scheduledFuture = taskScheduler.schedule(() -> sendVoteTime(roomName), Instant.now().plusSeconds(15));
+            ScheduledFuture<?> scheduledFuture = taskScheduler.schedule(() -> sendVoteTime(roomName), Instant.now().plusSeconds(30));
             scheduledFutures.put(roomName, scheduledFuture);
 
     }
