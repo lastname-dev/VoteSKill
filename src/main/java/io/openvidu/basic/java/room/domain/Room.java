@@ -37,6 +37,10 @@ public class Room implements Serializable {
     this.admitNumber = admitNumber;
     this.host=host;
   }
+  public Room(String name,List<String> people){
+    this.name=name;
+    this.people=people;
+  }
 //  public void addPerson(Person person){
 //    people.add(person);
 //  }

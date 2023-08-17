@@ -101,11 +101,14 @@ public class RoomService extends OpenVidu{
   public void exitRoom(String nickname,String roomName) {
     Room room = getRoom(roomName);
     List<String> people = room.getPeople();
-      for(String person : people){
-        if(person.equals(nickname)){
-          people.remove(person);
-        }
+    for(String person : people){
+      log.info("{} 에 있는 사람 : {}",roomName,person);
+      if(person.equals(nickname)){
+        people.remove(person);
       }
+      if(people.size()==0)
+        break;
+    }
     roomRedisTemplate.opsForHash().put(roomKeyPrefix,roomName,room);
   }
 
